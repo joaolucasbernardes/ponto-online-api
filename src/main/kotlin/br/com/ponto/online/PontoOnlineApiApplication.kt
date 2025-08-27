@@ -1,4 +1,4 @@
-package br.com.ponto.online.ponto_online_api
+package br.com.ponto.online
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.domain.EntityScan

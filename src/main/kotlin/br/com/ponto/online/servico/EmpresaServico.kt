@@ -16,4 +16,10 @@ class EmpresaServico(private val empresaRepositorio: EmpresaRepositorio) {
 
         return empresaRepositorio.save(empresa)
     }
+
+    fun buscarPorId(id: Long): Empresa {
+        return empresaRepositorio.findById(id).orElseThrow {
+            NoSuchElementException("Empresa com ID $id não encontrada.")
+        }
+    }
 }

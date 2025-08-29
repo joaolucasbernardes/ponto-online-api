@@ -24,4 +24,15 @@ class EmpresaControle(private val empresaServico: EmpresaServico) {
         val respostaDTO = EmpresaRespostaDTO(empresa)
         return ResponseEntity.ok(respostaDTO)
     }
+
+    @GetMapping
+    fun listarTodas(): ResponseEntity<List<EmpresaRespostaDTO>> {
+        val listaDeEmpresas = empresaServico.listarTodas()
+
+        val listaDeRespostasDTO = listaDeEmpresas.map { empresa ->
+            EmpresaRespostaDTO(empresa)
+        }
+
+        return ResponseEntity.ok(listaDeRespostasDTO)
+    }
 }

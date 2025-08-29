@@ -22,4 +22,8 @@ class EmpresaServico(private val empresaRepositorio: EmpresaRepositorio) {
             NoSuchElementException("Empresa com ID $id não encontrada.")
         }
     }
+
+    fun listarTodas(): List<Empresa> {
+        return empresaRepositorio.findAll()
+    }
 }

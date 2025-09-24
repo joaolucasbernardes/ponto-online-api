@@ -1,4 +1,4 @@
-package br.com.ponto.online.controller
+package br.com.ponto.online.controle
 
 import br.com.ponto.online.dto.EmpresaRequisicaoDTO
 import br.com.ponto.online.dto.EmpresaRespostaDTO

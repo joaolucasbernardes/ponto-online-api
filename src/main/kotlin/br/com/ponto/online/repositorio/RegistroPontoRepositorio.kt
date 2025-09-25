@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository
 
 @Repository
 interface RegistroPontoRepositorio : JpaRepository<RegistroPonto, Long> {
+    fun findByFuncionarioIdOrderByDataHoraDesc(funcionarioId: Long): List<RegistroPonto>
 }

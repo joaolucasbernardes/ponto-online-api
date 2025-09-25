@@ -21,4 +21,8 @@ class RegistroPontoServico(
 
         return registroPontoRepositorio.save(novoRegistro)
     }
+
+    fun buscarHistoricoPorFuncionario(funcionarioId: Long): List<RegistroPonto> {
+        return registroPontoRepositorio.findByFuncionarioIdOrderByDataHoraDesc(funcionarioId)
+    }
 }

@@ -79,3 +79,125 @@ body {
 .btn-login:hover {
     background-color: #3d5afe;
 }
+
+.app-header {
+    background-color: #16213e;
+    padding: 15px 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: 1000;
+}
+
+.container {
+    width: 100%;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.app-header .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.logo {
+    font-size: 1.5em;
+    color: #e0e0e0;
+    font-weight: bold;
+}
+
+.nav-link {
+    color: #a0a0a0;
+    text-decoration: none;
+    margin-left: 20px;
+    font-weight: 500;
+    transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #536dfe;
+}
+
+main.container {
+    padding-top: 100px;
+    padding-bottom: 40px;
+}
+
+.painel-bater-ponto {
+    background-color: #16213e;
+    padding: 40px;
+    border-radius: 10px;
+    text-align: center;
+    margin-bottom: 50px;
+}
+
+#saudacao {
+    font-size: 2em;
+    font-weight: 300;
+    margin-bottom: 8px;
+}
+
+#data-atual {
+    color: #a0a0a0;
+    margin-bottom: 30px;
+    font-size: 1.1em;
+}
+
+.btn-ponto {
+    padding: 20px 50px;
+    font-size: 1.6em;
+    font-weight: bold;
+    color: white;
+    background-color: #536dfe;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(83, 109, 254, 0.4);
+}
+
+.btn-ponto:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(83, 109, 254, 0.6);
+}
+
+.registros-do-dia h3 {
+    font-size: 1.5em;
+    margin-bottom: 25px;
+    text-align: center;
+    color: #e0e0e0;
+    font-weight: 400;
+}
+
+.quadro-registros {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 20px;
+}
+
+.registro-item {
+    background-color: #16213e;
+    padding: 25px 20px;
+    border-radius: 8px;
+    text-align: center;
+    border-bottom: 4px solid #0f3460;
+}
+
+.tipo-registro {
+    display: block;
+    font-size: 0.9em;
+    color: #a0a0a0;
+    margin-bottom: 10px;
+    text-transform: uppercase;
+}
+
+.hora-registro {
+    display: block;
+    font-size: 2.2em;
+    font-weight: bold;
+    color: #e0e0e0;
+}

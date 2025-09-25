@@ -36,6 +36,9 @@ document.addEventListener('DOMContentLoaded', () => {
         .then(data => {
             console.log('Login bem-sucedido:', data);
             alert(data.mensagem); // Mostra a mensagem de sucesso vinda do backend
+
+            // Redireciona o usuário para a página principal
+            window.location.href = '/principal.html';
         })
         .catch(error => {
             console.error('Erro na autenticação:', error);

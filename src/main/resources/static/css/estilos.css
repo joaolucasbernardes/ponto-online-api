@@ -201,3 +201,46 @@ main.container {
     font-weight: bold;
     color: #e0e0e0;
 }
+
+
+.painel-historico h2 {
+    font-size: 1.8em;
+    text-align: center;
+    margin-bottom: 40px;
+    color: #e0e0e0;
+    font-weight: 400;
+}
+
+.lista-historico-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.dia-historico {
+    background-color: #16213e;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.dia-historico h3 {
+    font-size: 1.2em;
+    color: #536dfe;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px solid #0f3460;
+}
+
+.historico-item {
+    background-color: #2a2a3e;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 10px;
+    color: #e0e0e0;
+    font-size: 1.1em;
+}
+
+.historico-item:last-child {
+    margin-bottom: 0;
+}

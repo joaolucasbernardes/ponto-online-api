@@ -5,12 +5,14 @@ import br.com.ponto.online.entidade.Funcionario
 import br.com.ponto.online.repositorio.EmpresaRepositorio
 import br.com.ponto.online.repositorio.FuncionarioRepositorio
 import org.springframework.boot.CommandLineRunner
+import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Component
 
 @Component
 class InicializadorDeDados(
     private val empresaRepositorio: EmpresaRepositorio,
-    private val funcionarioRepositorio: FuncionarioRepositorio
+    private val funcionarioRepositorio: FuncionarioRepositorio,
+    private val passwordEncoder: PasswordEncoder
 ) : CommandLineRunner {
 
     override fun run(vararg args: String?) {
@@ -21,12 +23,15 @@ class InicializadorDeDados(
                 Empresa(razaoSocial = "Empresa de Teste", cnpj = "11222333000144")
             )
 
+            // CODIFICAR A SENHA ANTES DE SALVAR
+            val senhaCriptografada = passwordEncoder.encode("admin123")
+
             val funcionario = funcionarioRepositorio.save(
                 Funcionario(
                     nome = "Colaborador Padrão",
                     cpf = "12345678900",
                     email = "teste@email.com",
-                    senha = "hash_inseguro_temporario",
+                    senha = senhaCriptografada, // SALVAR A SENHA CRIPTOGRAFADA
                     empresa = empresa
                 )
             )

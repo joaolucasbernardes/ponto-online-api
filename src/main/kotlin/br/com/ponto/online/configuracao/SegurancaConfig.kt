@@ -27,15 +27,17 @@ class SegurancaConfig(
             csrf { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeHttpRequests {
+                // ADICIONAMOS AS DUAS LINHAS ABAIXO
+                authorize("/principal.html", permitAll)
+                authorize("/historico.html", permitAll)
+
                 authorize("/login.html", permitAll)
                 authorize("/css/**", permitAll)
                 authorize("/js/**", permitAll)
                 authorize("/login", permitAll)
                 authorize(anyRequest, authenticated)
             }
-            authenticationProvider()
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtFiltro)
-
         }
         return http.build()
     }

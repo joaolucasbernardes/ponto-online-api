@@ -1,29 +1,41 @@
 document.addEventListener('DOMContentLoaded', () => {
     const containerHistorico = document.querySelector('#lista-historico');
-
     const funcionarioId = 1;
 
-    // Função para buscar e renderizar o histórico
     function carregarHistorico() {
-        fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}`)
+        // Pega o token salvo no localStorage
+        const token = localStorage.getItem('jwt_token');
+
+        if (!token) {
+            containerHistorico.innerHTML = '<p>Sessão expirada. <a href="/login.html">Faça o login</a> para ver o histórico.</p>';
+            return;
+        }
+
+        fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
             .then(response => {
+                if (response.status === 403) {
+                    throw new Error('Acesso negado. Sua sessão pode ter expirado.');
+                }
                 if (response.ok) {
                     return response.json();
                 }
                 throw new Error('Falha ao carregar o histórico.');
             })
             .then(registros => {
-                containerHistorico.innerHTML = ''; // Limpa a mensagem "Carregando..."
+                containerHistorico.innerHTML = ''; 
 
                 if (registros.length === 0) {
                     containerHistorico.innerHTML = '<p>Nenhum registro de ponto encontrado.</p>';
                     return;
                 }
 
-                // Agrupa os registros pela data
                 const registrosPorData = agruparRegistrosPorData(registros);
 
-                // Cria os elementos HTML para cada dia
                 for (const data in registrosPorData) {
                     const diaCard = document.createElement('div');
                     diaCard.className = 'dia-historico';
@@ -35,7 +47,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     registrosPorData[data].forEach(registro => {
                         const registroItem = document.createElement('div');
                         registroItem.className = 'historico-item';
-                        const hora = registro.dataHora.split(' ')[1]; // Pega apenas a hora
+                        const hora = registro.dataHora.split(' ')[1];
                         registroItem.textContent = `Ponto registrado às: ${hora}`;
                         diaCard.appendChild(registroItem);
                     });
@@ -45,7 +57,10 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Erro ao buscar histórico:', error);
-                containerHistorico.innerHTML = '<p>Não foi possível carregar o histórico. Tente novamente mais tarde.</p>';
+                containerHistorico.innerHTML = `<p>Não foi possível carregar o histórico. ${error.message}</p>`;
+                if (error.message.includes('Acesso negado')) {
+                     setTimeout(() => window.location.href = '/login.html', 2000);
+                }
             });
     }
 
@@ -59,8 +74,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return acc;
         }, {});
     }
-
-    // Função auxiliar para formatar a data do título do card
+    
     function formatarDataParaExibicao(dataString) {
         const [dia, mes, ano] = dataString.split('/');
         const dataObj = new Date(ano, mes - 1, dia);

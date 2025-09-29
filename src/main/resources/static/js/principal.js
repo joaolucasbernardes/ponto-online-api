@@ -1,71 +1,127 @@
 document.addEventListener('DOMContentLoaded', () => {
     console.log('Página principal carregada e script principal.js executado.');
 
-    // 1. Seleciona os elementos da página
     const elementoSaudacao = document.querySelector('#saudacao');
     const elementoDataAtual = document.querySelector('#data-atual');
     const btnBaterPonto = document.querySelector('#btnBaterPonto');
-    
-    // Seleciona os spans onde as horas serão exibidas
-    const horaEntradaSpan = document.querySelector('#hora-entrada');
-    const horaSaidaAlmocoSpan = document.querySelector('#hora-saida-almoco');
-    const horaRetornoAlmocoSpan = document.querySelector('#hora-retorno-almoco');
-    const horaSaidaSpan = document.querySelector('#hora-saida');
+    const spansDeHora = {
+        entrada: document.querySelector('#hora-entrada'),
+        saidaAlmoco: document.querySelector('#hora-saida-almoco'),
+        retornoAlmoco: document.querySelector('#hora-retorno-almoco'),
+        saida: document.querySelector('#hora-saida')
+    };
 
-    const nomeUsuario = "Colaborador Padrão";
-    elementoSaudacao.textContent = `Olá, ${nomeUsuario}!`;
+    const funcionarioId = 1; // Alteração futura
 
-    const hoje = new Date();
-    const opcoesDeFormatacao = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-    let dataFormatada = hoje.toLocaleDateString('pt-BR', opcoesDeFormatacao);
-    elementoDataAtual.textContent = dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1);
 
-    btnBaterPonto.addEventListener('click', () => {
-        console.log('Botão "Bater Ponto" clicado!');
+    function configurarCabecalho() {
+        const nomeUsuario = "Colaborador Padrão";
+        elementoSaudacao.textContent = `Olá, ${nomeUsuario}!`;
 
-        const dados = {
-            funcionarioId: 1 
-        };
+        const hoje = new Date();
+        const opcoesDeFormatacao = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        let dataFormatada = hoje.toLocaleDateString('pt-BR', opcoesDeFormatacao);
+        elementoDataAtual.textContent = dataFormatada.charAt(0).toUpperCase() + dataFormatada.slice(1);
+    }
 
-        fetch('http://localhost:8080/registros-ponto', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            // Se o backend retornar um erro (ex: funcionário não encontrado), ele cairá aqui.
-            throw new Error('Ocorreu um erro ao registrar o ponto.');
-        })
-        .then(data => {
-            // 'data' aqui é o nosso RegistroPontoRespostaDTO
-            console.log('Ponto registrado com sucesso:', data);
-            
-            // Atualiza o quadro de registros na tela
-            atualizarQuadroDeHoras(data.dataHora);
-        })
-        .catch(error => {
-            console.error('Erro:', error);
-            alert(error.message);
-        });
-    });
+    function atualizarQuadroDeHoras(registros = []) {
+        spansDeHora.entrada.textContent = '--:--';
+        spansDeHora.saidaAlmoco.textContent = '--:--';
+        spansDeHora.retornoAlmoco.textContent = '--:--';
+        spansDeHora.saida.textContent = '--:--';
 
-    function atualizarQuadroDeHoras(dataHoraCompleta) {
-        const hora = dataHoraCompleta.split(' ')[1];
-
-        // Lógica sequencial simples para preencher o próximo campo vazio
-        if (horaEntradaSpan.textContent === '--:--') {
-            horaEntradaSpan.textContent = hora;
-        } else if (horaSaidaAlmocoSpan.textContent === '--:--') {
-            horaSaidaAlmocoSpan.textContent = hora;
-        } else if (horaRetornoAlmocoSpan.textContent === '--:--') {
-            horaRetornoAlmocoSpan.textContent = hora;
-        } else if (horaSaidaSpan.textContent === '--:--') {
-            horaSaidaSpan.textContent = hora;
-        } else {
-            alert('Todos os pontos do dia já foram registrados!');
+        // Preenche com os registros existentes
+        if (registros.length > 0) {
+            spansDeHora.entrada.textContent = registros[0] ? registros[0].dataHora.split(' ')[1] : '--:--';
+        }
+        if (registros.length > 1) {
+            spansDeHora.saidaAlmoco.textContent = registros[1] ? registros[1].dataHora.split(' ')[1] : '--:--';
+        }
+        if (registros.length > 2) {
+            spansDeHora.retornoAlmoco.textContent = registros[2] ? registros[2].dataHora.split(' ')[1] : '--:--';
+        }
+        if (registros.length > 3) {
+            spansDeHora.saida.textContent = registros[3] ? registros[3].dataHora.split(' ')[1] : '--:--';
         }
     }
+
+    // Verifica o limite de registros e atualiza o estado do botão
+    function verificarLimiteEAtualizarBotao(totalDeRegistros) {
+        if (totalDeRegistros >= 4) {
+            btnBaterPonto.disabled = true;
+            btnBaterPonto.textContent = 'Limite Atingido';
+            btnBaterPonto.style.backgroundColor = '#6c757d'; // Cor cinza
+            btnBaterPonto.style.cursor = 'not-allowed';
+        } else {
+            btnBaterPonto.disabled = false;
+            btnBaterPonto.textContent = 'Bater Ponto';
+            btnBaterPonto.style.backgroundColor = '#536dfe';
+            btnBaterPonto.style.cursor = 'pointer';
+        }
+    }
+
+    // Função para carregar os registros do dia ao abrir a página
+    async function carregarRegistrosDoDia() {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            alert('Sessão expirada. Por favor, faça o login novamente.');
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/hoje`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (!response.ok) throw new Error('Falha ao carregar registros do dia.');
+
+            const registros = await response.json();
+            console.log('Registros de hoje carregados:', registros);
+            
+            atualizarQuadroDeHoras(registros);
+            verificarLimiteEAtualizarBotao(registros.length);
+
+        } catch (error) {
+            console.error('Erro ao carregar registros:', error);
+            alert(error.message);
+        }
+    }
+    
+    // Evento de clique no botão para registrar um novo ponto
+    btnBaterPonto.addEventListener('click', async () => {
+        const token = localStorage.getItem('jwt_token');
+        if (!token) {
+            alert('Sessão expirada. Faça login.');
+            window.location.href = '/login.html';
+            return;
+        }
+
+        try {
+            const response = await fetch('http://localhost:8080/registros-ponto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({ funcionarioId })
+            });
+            
+            if (!response.ok) {
+                // Tenta ler a mensagem de erro do backend
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Erro ao registrar o ponto.');
+            }
+
+            // Após registrar, recarrega os pontos do dia para atualizar a tela
+            await carregarRegistrosDoDia();
+
+        } catch (error) {
+            console.error('Erro no registro de ponto:', error);
+            alert(error.message); 
+        }
+    });
+
+    configurarCabecalho();
+    carregarRegistrosDoDia();
 });

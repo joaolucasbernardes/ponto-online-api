@@ -12,16 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const identificador = identificadorInput.value;
         const senha = senhaInput.value;
 
-        // Cria o objeto (payload) que será enviado para a API
-        //    A estrutura deste objeto é idêntica à do LoginRequisicaoDTO no backend.
         const dadosLogin = {
             identificador: identificador,
             senha: senha
         };
 
-        // Usa a API fetch para enviar os dados ao backend
         fetch('http://localhost:8080/login', {
-            method: 'POST', 
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -31,18 +28,24 @@ document.addEventListener('DOMContentLoaded', () => {
             if (response.ok) {
                 return response.json();
             }
+            // Limpa qualquer token antigo se o login falhar
+            localStorage.removeItem('jwt_token'); 
             throw new Error('Usuário ou senha inválidos.');
         })
         .then(data => {
             console.log('Login bem-sucedido:', data);
-            alert(data.mensagem); // Mostra a mensagem de sucesso vinda do backend
+            
+            // Salva o token no localStorage do navegador
+            localStorage.setItem('jwt_token', data.token);
+
+            alert(data.mensagem); 
 
             // Redireciona o usuário para a página principal
             window.location.href = '/principal.html';
         })
         .catch(error => {
             console.error('Erro na autenticação:', error);
-            alert(error.message); 
+            alert(error.message);
         });
     });
 });

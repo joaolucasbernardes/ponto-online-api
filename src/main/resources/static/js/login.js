@@ -37,6 +37,8 @@ document.addEventListener('DOMContentLoaded', () => {
             
             // Salva o token no localStorage do navegador
             localStorage.setItem('jwt_token', data.token);
+            localStorage.setItem('funcionario_id', data.funcionarioId);
+            localStorage.setItem('funcionario_nome', data.nome);
 
             alert(data.mensagem); 
 

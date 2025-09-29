@@ -24,11 +24,11 @@ class InicializadorDeDados(
             )
 
             // CODIFICAR A SENHA ANTES DE SALVAR
-            val senhaCriptografada = passwordEncoder.encode("admin123")
+            val senhaCriptografada = passwordEncoder.encode("admin")
 
             val funcionario = funcionarioRepositorio.save(
                 Funcionario(
-                    nome = "Colaborador Padrão",
+                    nome = "João",
                     cpf = "12345678900",
                     email = "teste@email.com",
                     senha = senhaCriptografada, // SALVAR A SENHA CRIPTOGRAFADA

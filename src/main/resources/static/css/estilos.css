@@ -202,7 +202,6 @@ main.container {
     color: #e0e0e0;
 }
 
-
 .painel-historico h2 {
     font-size: 1.8em;
     text-align: center;
@@ -214,33 +213,80 @@ main.container {
 .lista-historico-container {
     display: flex;
     flex-direction: column;
-    gap: 25px;
+    gap: 15px;
 }
 
-.dia-historico {
+.accordion-item {
     background-color: #16213e;
-    padding: 25px;
     border-radius: 10px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
 }
 
-.dia-historico h3 {
+.accordion-header {
+    padding: 20px 25px;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #16213e;
+    transition: background-color 0.3s ease;
+}
+
+.accordion-header:hover {
+    background-color: #1f2c4a;
+}
+
+.accordion-header h3 {
     font-size: 1.2em;
+    color: #c0c0c0;
+    font-weight: 500;
+}
+
+.accordion-header::after {
+    content: '+';
+    font-size: 2em;
     color: #536dfe;
-    margin-bottom: 20px;
-    padding-bottom: 15px;
-    border-bottom: 1px solid #0f3460;
+    transition: transform 0.4s ease;
+}
+
+.accordion-item.active .accordion-header::after {
+    transform: rotate(45deg);
+}
+
+.accordion-content {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.5s cubic-bezier(0.25, 0.8, 0.25, 1), padding 0.5s ease;
+    background-color: #1a1a2e;
+}
+
+.accordion-item.active .accordion-content {
+    max-height: 500px;
+    padding: 5px 0;
+}
+
+.accordion-body {
+    padding: 0 25px 20px 25px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
 }
 
 .historico-item {
     background-color: #2a2a3e;
     padding: 15px;
     border-radius: 5px;
-    margin-bottom: 10px;
     color: #e0e0e0;
     font-size: 1.1em;
+    opacity: 0;
+    transform: translateY(-10px);
+    animation: fadeIn 0.5s ease forwards;
 }
 
-.historico-item:last-child {
-    margin-bottom: 0;
+@keyframes fadeIn {
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

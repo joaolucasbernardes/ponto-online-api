@@ -11,12 +11,15 @@ document.addEventListener('DOMContentLoaded', () => {
         saida: document.querySelector('#hora-saida')
     };
 
-    const funcionarioId = 1; // Alteração futura
-
-
     function configurarCabecalho() {
-        const nomeUsuario = "Colaborador Padrão";
-        elementoSaudacao.textContent = `Olá, ${nomeUsuario}!`;
+        const nomeUsuario = localStorage.getItem('funcionario_nome');
+        if (nomeUsuario) {
+            elementoSaudacao.textContent = `Olá, ${nomeUsuario}!`;
+        } else {
+            elementoSaudacao.textContent = 'Olá!';
+            alert('Não foi possível identificar o usuário. Faça o login novamente.');
+            window.location.href = '/login.html';
+        }
 
         const hoje = new Date();
         const opcoesDeFormatacao = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
@@ -30,27 +33,17 @@ document.addEventListener('DOMContentLoaded', () => {
         spansDeHora.retornoAlmoco.textContent = '--:--';
         spansDeHora.saida.textContent = '--:--';
 
-        // Preenche com os registros existentes
-        if (registros.length > 0) {
-            spansDeHora.entrada.textContent = registros[0] ? registros[0].dataHora.split(' ')[1] : '--:--';
-        }
-        if (registros.length > 1) {
-            spansDeHora.saidaAlmoco.textContent = registros[1] ? registros[1].dataHora.split(' ')[1] : '--:--';
-        }
-        if (registros.length > 2) {
-            spansDeHora.retornoAlmoco.textContent = registros[2] ? registros[2].dataHora.split(' ')[1] : '--:--';
-        }
-        if (registros.length > 3) {
-            spansDeHora.saida.textContent = registros[3] ? registros[3].dataHora.split(' ')[1] : '--:--';
-        }
+        if (registros.length > 0) spansDeHora.entrada.textContent = registros[0].dataHora.split(' ')[1];
+        if (registros.length > 1) spansDeHora.saidaAlmoco.textContent = registros[1].dataHora.split(' ')[1];
+        if (registros.length > 2) spansDeHora.retornoAlmoco.textContent = registros[2].dataHora.split(' ')[1];
+        if (registros.length > 3) spansDeHora.saida.textContent = registros[3].dataHora.split(' ')[1];
     }
 
-    // Verifica o limite de registros e atualiza o estado do botão
     function verificarLimiteEAtualizarBotao(totalDeRegistros) {
         if (totalDeRegistros >= 4) {
             btnBaterPonto.disabled = true;
             btnBaterPonto.textContent = 'Limite Atingido';
-            btnBaterPonto.style.backgroundColor = '#6c757d'; // Cor cinza
+            btnBaterPonto.style.backgroundColor = '#6c757d';
             btnBaterPonto.style.cursor = 'not-allowed';
         } else {
             btnBaterPonto.disabled = false;
@@ -60,10 +53,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Função para carregar os registros do dia ao abrir a página
     async function carregarRegistrosDoDia() {
         const token = localStorage.getItem('jwt_token');
-        if (!token) {
+        const funcionarioId = localStorage.getItem('funcionario_id');
+
+        if (!token || !funcionarioId) {
             alert('Sessão expirada. Por favor, faça o login novamente.');
             window.location.href = '/login.html';
             return;
@@ -88,10 +82,11 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
     
-    // Evento de clique no botão para registrar um novo ponto
     btnBaterPonto.addEventListener('click', async () => {
         const token = localStorage.getItem('jwt_token');
-        if (!token) {
+        const funcionarioId = localStorage.getItem('funcionario_id');
+
+        if (!token || !funcionarioId) {
             alert('Sessão expirada. Faça login.');
             window.location.href = '/login.html';
             return;
@@ -108,12 +103,10 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             if (!response.ok) {
-                // Tenta ler a mensagem de erro do backend
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Erro ao registrar o ponto.');
             }
 
-            // Após registrar, recarrega os pontos do dia para atualizar a tela
             await carregarRegistrosDoDia();
 
         } catch (error) {

@@ -2,7 +2,7 @@ package br.com.ponto.online.servico
 
 import br.com.ponto.online.dto.LoginRequisicaoDTO
 import br.com.ponto.online.dto.LoginRespostaDTO
-import br.com.ponto.online.entidade.Funcionario // Importar nossa entidade
+import br.com.ponto.online.entidade.Funcionario
 import org.springframework.security.authentication.AuthenticationManager
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
@@ -22,7 +22,9 @@ class AutenticacaoServico(
 
         return LoginRespostaDTO(
             mensagem = "Login bem-sucedido!",
-            token = jwtToken
+            token = jwtToken,
+            funcionarioId = funcionario.id!!,
+            nome = funcionario.nome
         )
     }
 }

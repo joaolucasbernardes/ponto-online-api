@@ -2,23 +2,27 @@ package br.com.ponto.online.servico
 
 import br.com.ponto.online.dto.LoginRequisicaoDTO
 import br.com.ponto.online.dto.LoginRespostaDTO
-import br.com.ponto.online.repositorio.FuncionarioRepositorio
+import br.com.ponto.online.entidade.Funcionario // Importar nossa entidade
+import org.springframework.security.authentication.AuthenticationManager
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken
 import org.springframework.stereotype.Service
 
 @Service
 class AutenticacaoServico(
-    private val funcionarioRepositorio: FuncionarioRepositorio
+    private val authenticationManager: AuthenticationManager,
+    private val jwtServico: JwtServico
 ) {
     fun login(loginDTO: LoginRequisicaoDTO): LoginRespostaDTO {
-        // LÓGICA DE LOGIN TEMPORÁRIA
-        println("Tentando autenticar o usuário: ${loginDTO.identificador}")
+        val tokenAutenticacao = UsernamePasswordAuthenticationToken(loginDTO.identificador, loginDTO.senha)
 
-        if (loginDTO.identificador.isNotEmpty() && loginDTO.senha == "admin123") {
-            println("Autenticação bem-sucedida (LÓGICA TEMPORÁRIA)")
-            return LoginRespostaDTO("Login realizado com sucesso!")
-        } else {
-            println("Falha na autenticação (LÓGICA TEMPORÁRIA)")
-            throw IllegalArgumentException("Identificador ou senha inválidos.")
-        }
+        val autenticacao = authenticationManager.authenticate(tokenAutenticacao)
+
+        val funcionario = autenticacao.principal as Funcionario
+        val jwtToken = jwtServico.gerarToken(funcionario)
+
+        return LoginRespostaDTO(
+            mensagem = "Login bem-sucedido!",
+            token = jwtToken
+        )
     }
 }

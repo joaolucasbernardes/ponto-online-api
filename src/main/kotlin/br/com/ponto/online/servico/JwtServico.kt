@@ -31,8 +31,7 @@ class JwtServico {
     }
 
     private fun getChaveDeAssinatura(): SecretKey {
-        val bytesChave = Decoders.BASE64.decode(CHAVE_SECRETA)
-        return Keys.hmacShaKeyFor(bytesChave)
+        return Keys.hmacShaKeyFor(CHAVE_SECRETA.toByteArray())
     }
 
     fun extrairUsername(token: String): String {

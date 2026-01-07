@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const registros = await response.json();
             console.log('Registros de hoje carregados:', registros);
-            
+
             atualizarQuadroDeHoras(registros);
             verificarLimiteEAtualizarBotao(registros.length);
 
@@ -81,7 +81,7 @@ document.addEventListener('DOMContentLoaded', () => {
             alert(error.message);
         }
     }
-    
+
     btnBaterPonto.addEventListener('click', async () => {
         const token = localStorage.getItem('jwt_token');
         const funcionarioId = localStorage.getItem('funcionario_id');
@@ -101,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 },
                 body: JSON.stringify({ funcionarioId })
             });
-            
+
             if (!response.ok) {
                 const errorData = await response.json();
                 throw new Error(errorData.message || 'Erro ao registrar o ponto.');
@@ -111,10 +111,63 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Erro no registro de ponto:', error);
-            alert(error.message); 
+            alert(error.message);
         }
     });
 
+    async function carregarResumoHoras() {
+        const token = localStorage.getItem('jwt_token');
+        const funcionarioId = localStorage.getItem('funcionario_id');
+
+        if (!token || !funcionarioId) return;
+
+        try {
+            // Buscar cálculo do dia
+            const responseDia = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/horas/dia`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (responseDia.ok) {
+                const calculoDia = await responseDia.json();
+                atualizarResumoVisual(calculoDia);
+            }
+
+            // Buscar resumo mensal
+            const responseMes = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/horas/mes`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (responseMes.ok) {
+                const resumoMes = await responseMes.json();
+                document.querySelector('#banco-horas').textContent = resumoMes.bancoDeHoras;
+                aplicarCorSaldo(document.querySelector('#banco-horas'), resumoMes.bancoDeHoras);
+            }
+
+        } catch (error) {
+            console.error('Erro ao carregar resumo de horas:', error);
+        }
+    }
+
+    function atualizarResumoVisual(calculoDTO) {
+        document.querySelector('#horas-trabalhadas').textContent = calculoDTO.horasTrabalhadas;
+        document.querySelector('#intervalo-almoco').textContent = calculoDTO.intervaloAlmoco;
+        document.querySelector('#saldo-dia').textContent = calculoDTO.saldo;
+
+        aplicarCorSaldo(document.querySelector('#saldo-dia'), calculoDTO.saldo);
+    }
+
+    function aplicarCorSaldo(elemento, saldo) {
+        elemento.classList.remove('positivo', 'negativo', 'neutro');
+
+        if (saldo.startsWith('+') && saldo !== '+00:00') {
+            elemento.classList.add('positivo');
+        } else if (saldo.startsWith('-')) {
+            elemento.classList.add('negativo');
+        } else {
+            elemento.classList.add('neutro');
+        }
+    }
+
     configurarCabecalho();
-    carregarRegistrosDoDia();
+    carregarRegistrosDoDia().then(() => carregarResumoHoras());
 });

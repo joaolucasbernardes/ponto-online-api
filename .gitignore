@@ -38,3 +38,8 @@ out/
 
 ### Kotlin ###
 .kotlin
+
+### Temporary files ###
+build-output.txt
+compile-error.txt
+*.log

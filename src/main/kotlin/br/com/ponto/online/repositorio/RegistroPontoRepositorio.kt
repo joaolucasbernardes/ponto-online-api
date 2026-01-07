@@ -12,4 +12,6 @@ interface RegistroPontoRepositorio : JpaRepository<RegistroPonto, Long> {
     fun countByFuncionarioIdAndDataHoraBetween(funcionarioId: Long, inicio: LocalDateTime, fim: LocalDateTime): Long
 
     fun findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(funcionarioId: Long, inicio: LocalDateTime, fim: LocalDateTime): List<RegistroPonto>
+    
+    fun findByFuncionarioIdAndDataHoraBetween(funcionarioId: Long, inicio: LocalDateTime, fim: LocalDateTime): List<RegistroPonto>
 }

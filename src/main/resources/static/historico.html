@@ -1,32 +1,358 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Meu Histórico - Ponto Online</title>
     <link rel="stylesheet" href="/css/estilos.css">
+    <style>
+        /* Estilos específicos para o histórico premium */
+        .historico-header {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            margin-bottom: var(--space-xl);
+            backdrop-filter: blur(10px);
+        }
+
+        .historico-header h2 {
+            margin: 0;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .historico-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: var(--space-md);
+            margin-top: var(--space-lg);
+        }
+
+        .stat-card {
+            background: rgba(26, 33, 66, 0.6);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md);
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: var(--space-xs);
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+        }
+
+        .filtros-container {
+            display: flex;
+            gap: var(--space-md);
+            margin-bottom: var(--space-xl);
+            flex-wrap: wrap;
+        }
+
+        .filtro-input {
+            flex: 1;
+            min-width: 200px;
+            padding: var(--space-md);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            transition: all var(--transition-base);
+        }
+
+        .filtro-input:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .dia-card {
+            background: rgba(26, 33, 66, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            margin-bottom: var(--space-lg);
+            overflow: hidden;
+            transition: all var(--transition-base);
+        }
+
+        .dia-card:hover {
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .dia-header {
+            padding: var(--space-lg);
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            transition: all var(--transition-base);
+        }
+
+        .dia-header:hover {
+            background: linear-gradient(135deg, rgba(99, 102, 241, 0.1), rgba(139, 92, 246, 0.1));
+        }
+
+        .dia-info {
+            display: flex;
+            align-items: center;
+            gap: var(--space-lg);
+        }
+
+        .dia-icone {
+            width: 48px;
+            height: 48px;
+            background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-md);
+        }
+
+        .dia-texto {
+            flex: 1;
+        }
+
+        .dia-data {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: var(--space-xs);
+        }
+
+        .dia-resumo {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            gap: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .resumo-badge {
+            background: rgba(99, 102, 241, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+
+        .expand-icon {
+            font-size: 1.5rem;
+            color: var(--accent-primary);
+            transition: transform var(--transition-base);
+        }
+
+        .dia-card.expanded .expand-icon {
+            transform: rotate(180deg);
+        }
+
+        .dia-detalhes {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height var(--transition-slow);
+        }
+
+        .dia-card.expanded .dia-detalhes {
+            max-height: 500px;
+        }
+
+        .timeline {
+            padding: var(--space-xl);
+            position: relative;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 40px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: linear-gradient(180deg, var(--accent-primary), var(--accent-secondary));
+            opacity: 0.3;
+        }
+
+        .timeline-item {
+            display: flex;
+            gap: var(--space-lg);
+            margin-bottom: var(--space-lg);
+            position: relative;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--bg-card);
+            border: 3px solid var(--accent-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.125rem;
+            flex-shrink: 0;
+            position: relative;
+            z-index: 1;
+            box-shadow: 0 0 0 4px var(--bg-primary);
+        }
+
+        .timeline-marker.entrada {
+            border-color: var(--success);
+        }
+
+        .timeline-marker.saida-almoco {
+            border-color: var(--warning);
+        }
+
+        .timeline-marker.retorno-almoco {
+            border-color: var(--warning);
+        }
+
+        .timeline-marker.saida {
+            border-color: var(--danger);
+        }
+
+        .timeline-content {
+            flex: 1;
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-md) var(--space-lg);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .timeline-tipo {
+            font-weight: 600;
+            color: var(--text-primary);
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .timeline-hora {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--accent-primary);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: var(--space-2xl);
+            color: var(--text-secondary);
+        }
+
+        .empty-state-icon {
+            font-size: 4rem;
+            margin-bottom: var(--space-lg);
+            opacity: 0.3;
+        }
+
+        @media (max-width: 768px) {
+            .historico-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .timeline::before {
+                left: 20px;
+            }
+
+            .timeline-marker {
+                width: 32px;
+                height: 32px;
+                font-size: 1rem;
+            }
+
+            .dia-info {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: var(--space-sm);
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<header class="app-header">
-    <div class="container">
-        <h1 class="logo">Ponto Online</h1>
-        <nav>
-            <a href="/principal.html" class="nav-link">Início</a>
-            <a href="/login.html" id="btn-sair" class="nav-link">Sair</a>
-        </nav>
-    </div>
-</header>
+    <header class="app-header">
+        <div class="container">
+            <h1 class="logo">Ponto Online</h1>
+            <nav>
+                <a href="/principal.html" class="nav-link">Início</a>
+                <a href="/historico.html" class="nav-link" style="color: var(--accent-primary);">Histórico</a>
+                <a href="/login.html" id="btn-sair" class="nav-link">Sair</a>
+            </nav>
+        </div>
+    </header>
 
-<main class="container">
-    <section class="painel-historico">
-        <h2>Meu Histórico de Pontos</h2>
-        <div id="lista-historico" class="lista-historico-container">
-            <p>Carregando histórico...</p>
+    <main class="container">
+        <div class="historico-header">
+            <h2>📋 Meu Histórico de Pontos</h2>
+            <div class="historico-stats">
+                <div class="stat-card">
+                    <div class="stat-label">Total de Dias</div>
+                    <div class="stat-value" id="totalDias">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Registros</div>
+                    <div class="stat-value" id="totalRegistros">0</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Este Mês</div>
+                    <div class="stat-value" id="diasMes">0</div>
+                </div>
             </div>
-    </section>
-</main>
+        </div>
 
-<script src="/js/historico.js"></script>
+        <div class="filtros-container">
+            <input type="month" id="filtroMes" class="filtro-input" placeholder="Filtrar por mês">
+            <input type="text" id="filtroBusca" class="filtro-input" placeholder="🔍 Buscar por data...">
+        </div>
+
+        <section id="lista-historico" class="lista-historico-container">
+            <div class="empty-state">
+                <div class="empty-state-icon">⏳</div>
+                <p>Carregando histórico...</p>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/historico.js"></script>
+
 </body>
+
 </html>

@@ -30,16 +30,20 @@ class SegurancaConfig(
                 // Rotas públicas - Login
                 authorize("/login.html", permitAll)
                 authorize("/login", permitAll)
-                
-                // Recursos estáticos (CSS, JS, HTML)
-                authorize("/css/**", permitAll)
-                authorize("/js/**", permitAll)
-                authorize("/*.html", permitAll) // Todas as páginas HTML são públicas (verificação de token via JS)
                 authorize("/", permitAll)
                 authorize("/index.html", permitAll)
                 
+                // Recursos estáticos (CSS, JS)
+                authorize("/css/**", permitAll)
+                authorize("/js/**", permitAll)
+                
                 // Endpoints de diagnóstico (temporário para debug)
                 authorize("/diagnostico/**", permitAll)
+                
+                // Páginas protegidas - requerem autenticação
+                authorize("/admin.html", hasRole("ADMIN"))
+                authorize("/principal.html", authenticated)
+                authorize("/historico.html", authenticated)
                 
                 // APIs protegidas por ADMIN
                 authorize("/api/admin/**", hasRole("ADMIN"))

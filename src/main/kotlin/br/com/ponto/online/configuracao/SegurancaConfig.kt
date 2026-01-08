@@ -27,14 +27,19 @@ class SegurancaConfig(
             csrf { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeHttpRequests {
-                // ADICIONAMOS AS DUAS LINHAS ABAIXO
-                authorize("/principal.html", permitAll)
-                authorize("/historico.html", permitAll)
-
+                // Rotas públicas
                 authorize("/login.html", permitAll)
                 authorize("/css/**", permitAll)
                 authorize("/js/**", permitAll)
                 authorize("/login", permitAll)
+                authorize("/diagnostico/**", permitAll)
+                
+                // Rotas protegidas por ADMIN
+                authorize("/admin.html", hasRole("ADMIN"))
+                authorize("/admin/**", hasRole("ADMIN"))
+                authorize("/funcionarios/**", hasRole("ADMIN"))
+                
+                // Demais rotas requerem autenticação
                 authorize(anyRequest, authenticated)
             }
             addFilterBefore<UsernamePasswordAuthenticationFilter>(jwtFiltro)

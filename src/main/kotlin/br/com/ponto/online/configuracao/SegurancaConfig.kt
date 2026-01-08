@@ -27,17 +27,26 @@ class SegurancaConfig(
             csrf { disable() }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeHttpRequests {
-                // Rotas públicas
+                // Rotas públicas - Login
                 authorize("/login.html", permitAll)
+                authorize("/login", permitAll)
+                
+                // Recursos estáticos (CSS, JS, HTML)
                 authorize("/css/**", permitAll)
                 authorize("/js/**", permitAll)
-                authorize("/login", permitAll)
+                authorize("/*.html", permitAll) // Todas as páginas HTML são públicas (verificação de token via JS)
+                authorize("/", permitAll)
+                authorize("/index.html", permitAll)
+                
+                // Endpoints de diagnóstico (temporário para debug)
                 authorize("/diagnostico/**", permitAll)
                 
-                // Rotas protegidas por ADMIN
-                authorize("/admin.html", hasRole("ADMIN"))
-                authorize("/admin/**", hasRole("ADMIN"))
-                authorize("/funcionarios/**", hasRole("ADMIN"))
+                // APIs protegidas por ADMIN
+                authorize("/api/admin/**", hasRole("ADMIN"))
+                authorize("/api/funcionarios/**", hasRole("ADMIN"))
+                
+                // APIs protegidas (requerem autenticação)
+                authorize("/api/**", authenticated)
                 
                 // Demais rotas requerem autenticação
                 authorize(anyRequest, authenticated)

@@ -2,7 +2,9 @@ package br.com.ponto.online.entidade
 
 import jakarta.persistence.*
 import org.springframework.security.core.GrantedAuthority
+import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
+import br.com.ponto.online.enums.Role
 
 @Entity
 @Table(name = "funcionarios")
@@ -21,6 +23,10 @@ class Funcionario(
     @Column(nullable = false)
     val senha: String,
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
+    val role: Role = Role.FUNCIONARIO,
+
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
     val empresa: Empresa
@@ -28,7 +34,7 @@ class Funcionario(
 ) : UserDetails { // Implementa a interface UserDetails
 
     override fun getAuthorities(): MutableCollection<out GrantedAuthority> {
-        return mutableListOf() // Por enquanto, sem perfis de autoridade (roles)
+        return mutableListOf(SimpleGrantedAuthority("ROLE_${role.name}"))
     }
 
     override fun getPassword(): String {

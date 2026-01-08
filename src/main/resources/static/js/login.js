@@ -47,8 +47,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
                 alert(data.mensagem);
 
-                // Redireciona o usuário para a página principal
-                window.location.href = '/principal.html';
+                // Redireciona baseado na role do usuário
+                if (data.role === 'ADMIN') {
+                    window.location.href = '/admin.html';
+                } else {
+                    window.location.href = '/principal.html';
+                }
             })
             .catch(error => {
                 console.error('Erro na autenticação:', error);

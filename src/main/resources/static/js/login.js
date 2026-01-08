@@ -24,30 +24,35 @@ document.addEventListener('DOMContentLoaded', () => {
             },
             body: JSON.stringify(dadosLogin)
         })
-        .then(response => {
-            if (response.ok) {
-                return response.json();
-            }
-            // Limpa qualquer token antigo se o login falhar
-            localStorage.removeItem('jwt_token'); 
-            throw new Error('Usuário ou senha inválidos.');
-        })
-        .then(data => {
-            console.log('Login bem-sucedido:', data);
-            
-            // Salva o token no localStorage do navegador
-            localStorage.setItem('jwt_token', data.token);
-            localStorage.setItem('funcionario_id', data.funcionarioId);
-            localStorage.setItem('funcionario_nome', data.nome);
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                // Limpa qualquer token antigo se o login falhar
+                localStorage.removeItem('jwt_token');
+                throw new Error('Usuário ou senha inválidos.');
+            })
+            .then(data => {
+                console.log('Login bem-sucedido:', data);
 
-            alert(data.mensagem); 
+                // Salva o token no localStorage do navegador
+                localStorage.setItem('jwt_token', data.token);
+                localStorage.setItem('funcionario_id', data.funcionarioId);
+                localStorage.setItem('funcionario_nome', data.nome);
 
-            // Redireciona o usuário para a página principal
-            window.location.href = '/principal.html';
-        })
-        .catch(error => {
-            console.error('Erro na autenticação:', error);
-            alert(error.message);
-        });
+                // Salva também as chaves esperadas pelo admin.js
+                localStorage.setItem('token', data.token);
+                localStorage.setItem('role', data.role);
+                localStorage.setItem('userName', data.nome);
+
+                alert(data.mensagem);
+
+                // Redireciona o usuário para a página principal
+                window.location.href = '/principal.html';
+            })
+            .catch(error => {
+                console.error('Erro na autenticação:', error);
+                alert(error.message);
+            });
     });
 });

@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Admin - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1 class="logo">📊 Ponto Online</h1>
+            <div class="navbar-menu">
+                <a href="/admin.html" class="nav-link active">Dashboard</a>
+                <a href="/principal.html" class="nav-link">Início</a>
+                <a href="/historico.html" class="nav-link">Histórico</a>
+            </div>
+            <div class="navbar-user">
+                <span id="userName" class="user-name"></span>
+                <button onclick="logout()" class="btn-logout">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="dashboard-container">
+        <!-- Cards de Estatísticas -->
+        <section class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Total Funcionários</h3>
+                    <p class="stat-value" id="totalFuncionarios">-</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Registros Hoje</h3>
+                    <p class="stat-value" id="registrosHoje">-</p>
+                </div>
+            </div>
+
+            <div class="stat-card">
+                <div class="stat-icon">⏱️</div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Horas Trabalhadas Hoje</h3>
+                    <p class="stat-value" id="horasHoje">-</p>
+                </div>
+            </div>
+
+            <div class="stat-card alert">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-content">
+                    <h3 class="stat-label">Inconsistências</h3>
+                    <p class="stat-value" id="inconsistencias">-</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Gráfico de Presença -->
+        <section class="chart-section">
+            <div class="section-header">
+                <h2>📈 Presença dos Últimos 7 Dias</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="graficoPresenca"></canvas>
+            </div>
+        </section>
+
+        <!-- Grid de Conteúdo -->
+        <div class="content-grid">
+            <!-- Tabela de Funcionários -->
+            <section class="funcionarios-section">
+                <div class="section-header">
+                    <h2>👥 Funcionários Ativos</h2>
+                    <input type="text" id="searchFuncionarios" placeholder="🔍 Buscar funcionário..."
+                        class="search-input">
+                </div>
+                <div class="table-container">
+                    <table class="funcionarios-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Empresa</th>
+                                <th>Último Registro</th>
+                                <th>Status Hoje</th>
+                            </tr>
+                        </thead>
+                        <tbody id="funcionariosTableBody">
+                            <tr>
+                                <td colspan="5" class="loading">Carregando...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Lista de Inconsistências -->
+            <section class="inconsistencias-section">
+                <div class="section-header">
+                    <h2>⚠️ Inconsistências Detectadas</h2>
+                    <select id="filtroInconsistencias" class="filter-select">
+                        <option value="TODOS">Todos</option>
+                        <option value="REGISTRO_INCOMPLETO">Registro Incompleto</option>
+                        <option value="JORNADA_EXCESSIVA">Jornada Excessiva</option>
+                        <option value="SEM_INTERVALO">Sem Intervalo</option>
+                    </select>
+                </div>
+                <div class="inconsistencias-list" id="inconsistenciasList">
+                    <div class="loading">Carregando...</div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <script src="/js/admin.js"></script>
+</body>
+
+</html>

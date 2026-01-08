@@ -22,13 +22,27 @@ class JwtFiltroAutenticacao(
         response: HttpServletResponse,
         filterChain: FilterChain
     ) {
+        // Tenta obter o token do header Authorization
+        var jwt: String? = null
         val authHeader = request.getHeader("Authorization")
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        
+        if (authHeader != null && authHeader.startsWith("Bearer ")) {
+            jwt = authHeader.substring(7)
+        } else {
+            // Se não estiver no header, tenta obter do cookie
+            val cookies = request.cookies
+            if (cookies != null) {
+                val jwtCookie = cookies.find { it.name == "jwt_token" }
+                jwt = jwtCookie?.value
+            }
+        }
+        
+        // Se não encontrou token, continua sem autenticar
+        if (jwt == null) {
             filterChain.doFilter(request, response)
             return
         }
 
-        val jwt = authHeader.substring(7)
         val username = jwtServico.extrairUsername(jwt)
 
         if (SecurityContextHolder.getContext().authentication == null) {

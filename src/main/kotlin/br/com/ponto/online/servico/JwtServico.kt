@@ -16,7 +16,9 @@ class JwtServico {
     private val CHAVE_SECRETA = "7d20a7d5b7a110a1b6a1b15c54c12d19f15e1f1c24b2a3c3e4f4g5h6i7j8k9l0"
 
     fun gerarToken(userDetails: UserDetails): String {
-        val claims: Map<String, Any> = HashMap()
+        // Extrai o role do primeiro authority (ROLE_ADMIN ou ROLE_FUNCIONARIO)
+        val role = userDetails.authorities.firstOrNull()?.authority?.removePrefix("ROLE_") ?: "FUNCIONARIO"
+        val claims = mapOf("role" to role)
         return criarToken(claims, userDetails.username)
     }
 

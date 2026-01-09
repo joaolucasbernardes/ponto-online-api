@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Funcionários - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/gerenciar-funcionarios.css">
+</head>
+
+<body>
+    <nav class="navbar"
+        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 0; position: sticky; top: 0; z-index: 100;">
+        <div class="navbar-content"
+            style="max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
+            <h1 class="logo" style="font-size: 1.5rem; font-weight: 700; color: white; margin: 0;">📊 Ponto Online</h1>
+            <div class="navbar-menu" style="display: flex; flex-direction: row; gap: 1.5rem; align-items: center;">
+                <a href="/admin.html" class="nav-link">Dashboard</a>
+                <a href="/gerenciar-funcionarios.html" class="nav-link active">Gerenciar Funcionários</a>
+            </div>
+            <div class="navbar-user" style="display: flex; flex-direction: row; align-items: center; gap: 1rem;">
+                <span class="user-badge">Administrador</span>
+                <button onclick="logout()" class="btn-logout">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <!-- Header -->
+        <div class="page-header">
+            <h1>👥 Gerenciar Funcionários</h1>
+            <button onclick="abrirModalCriar()" class="btn-primary">+ Novo Funcionário</button>
+        </div>
+
+        <!-- Filtros -->
+        <div class="filters-section">
+            <input type="text" id="searchNome" placeholder="🔍 Buscar por nome..." class="search-input">
+
+            <select id="filterRole" class="filter-select">
+                <option value="">Todas as Roles</option>
+                <option value="ADMIN">Admin</option>
+                <option value="FUNCIONARIO">Funcionário</option>
+            </select>
+
+            <select id="filterStatus" class="filter-select">
+                <option value="">Todos os Status</option>
+                <option value="true">Ativo</option>
+                <option value="false">Inativo</option>
+            </select>
+
+            <button onclick="aplicarFiltros()" class="btn-secondary">Filtrar</button>
+            <button onclick="limparFiltros()" class="btn-secondary">Limpar</button>
+        </div>
+
+        <!-- Tabela -->
+        <div class="table-container">
+            <table class="funcionarios-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>Email</th>
+                        <th>CPF</th>
+                        <th>Empresa</th>
+                        <th>Role</th>
+                        <th>Status</th>
+                        <th style="min-width: 200px; white-space: nowrap;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody id="funcionariosTableBody">
+                    <tr>
+                        <td colspan="7" class="loading">Carregando...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <!-- Modal Criar/Editar -->
+    <div id="modalFuncionario" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modalTitle">Novo Funcionário</h2>
+                <button onclick="fecharModal()" class="btn-close">&times;</button>
+            </div>
+            <form id="formFuncionario" onsubmit="salvarFuncionario(event)">
+                <div class="form-group">
+                    <label for="inputNome">Nome *</label>
+                    <input type="text" id="inputNome" required>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputCpf">CPF *</label>
+                        <input type="text" id="inputCpf" maxlength="11" required>
+                        <small>Apenas números</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputEmail">Email *</label>
+                        <input type="email" id="inputEmail" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputSenha">Senha <span id="senhaOpcional" style="color: #f56565;"></span></label>
+                        <input type="password" id="inputSenha" required>
+                        <small id="senhaHint">Mínimo 6 caracteres</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputRole">Role *</label>
+                        <select id="inputRole" required>
+                            <option value="">Selecione...</option>
+                            <option value="FUNCIONARIO">Funcionário</option>
+                            <option value="ADMIN">Admin</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="inputEmpresa">Empresa *</label>
+                    <select id="inputEmpresa" required>
+                        <option value="">Carregando...</option>
+                    </select>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" onclick="fecharModal()" class="btn-secondary">Cancelar</button>
+                    <button type="submit" class="btn-primary">Salvar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal Detalhes -->
+    <div id="modalDetalhes" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Detalhes do Funcionário</h2>
+                <button onclick="fecharModalDetalhes()" class="btn-close">&times;</button>
+            </div>
+            <div class="detalhes-content">
+                <div class="detalhe-item">
+                    <strong>Nome:</strong>
+                    <span id="detalheNome"></span>
+                </div>
+                <div class="detalhe-item">
+                    <strong>Email:</strong>
+                    <span id="detalheEmail"></span>
+                </div>
+                <div class="detalhe-item">
+                    <strong>CPF:</strong>
+                    <span id="detalheCpf"></span>
+                </div>
+                <div class="detalhe-item">
+                    <strong>Empresa:</strong>
+                    <span id="detalheEmpresa"></span>
+                </div>
+                <div class="detalhe-item">
+                    <strong>Role:</strong>
+                    <span id="detalheRole"></span>
+                </div>
+                <div class="detalhe-item">
+                    <strong>Status:</strong>
+                    <span id="detalheStatus"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="fecharModalDetalhes()" class="btn-secondary">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/js/gerenciar-funcionarios.js"></script>
+</body>
+
+</html>

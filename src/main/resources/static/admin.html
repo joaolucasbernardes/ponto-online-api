@@ -16,11 +16,10 @@
             <h1 class="logo">📊 Ponto Online</h1>
             <div class="navbar-menu">
                 <a href="/admin.html" class="nav-link active">Dashboard</a>
-                <a href="/principal.html" class="nav-link">Início</a>
-                <a href="/historico.html" class="nav-link">Histórico</a>
+                <a href="/gerenciar-funcionarios.html" class="nav-link">Gerenciar Funcionários</a>
             </div>
             <div class="navbar-user">
-                <span id="userName" class="user-name"></span>
+                <span class="user-badge">Administrador</span>
                 <button onclick="logout()" class="btn-logout">Sair</button>
             </div>
         </div>
@@ -78,8 +77,12 @@
             <section class="funcionarios-section">
                 <div class="section-header">
                     <h2>👥 Funcionários Ativos</h2>
-                    <input type="text" id="searchFuncionarios" placeholder="🔍 Buscar funcionário..."
-                        class="search-input">
+                    <div style="display: flex; gap: 1rem; align-items: center;">
+                        <input type="text" id="searchFuncionarios" placeholder="🔍 Buscar funcionário..."
+                            class="search-input">
+                        <a href="/gerenciar-funcionarios.html" class="btn-primary"
+                            style="text-decoration: none; white-space: nowrap;">+ Gerenciar</a>
+                    </div>
                 </div>
                 <div class="table-container">
                     <table class="funcionarios-table">

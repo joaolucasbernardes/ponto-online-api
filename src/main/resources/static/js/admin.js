@@ -9,13 +9,11 @@ function verificarAutenticacao() {
     const token = localStorage.getItem('token');
     const role = localStorage.getItem('role');
     const userName = localStorage.getItem('userName');
-    
+
     if (!token || role !== 'ADMIN') {
         window.location.href = '/login.html';
         return;
     }
-    
-    document.getElementById('userName').textContent = userName || 'Admin';
 }
 
 // Logout
@@ -33,16 +31,16 @@ async function carregarEstatisticas() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) throw new Error('Erro ao carregar estatísticas');
-        
+
         const data = await response.json();
-        
+
         document.getElementById('totalFuncionarios').textContent = data.totalFuncionarios;
         document.getElementById('registrosHoje').textContent = data.registrosHoje;
         document.getElementById('horasHoje').textContent = data.horasTrabalhadasHoje;
         document.getElementById('inconsistencias').textContent = data.inconsistenciasHoje;
-        
+
     } catch (error) {
         console.error('Erro ao carregar estatísticas:', error);
     }
@@ -57,13 +55,13 @@ async function carregarGraficoPresenca() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) throw new Error('Erro ao carregar gráfico');
-        
+
         const data = await response.json();
-        
+
         renderizarGrafico(data);
-        
+
     } catch (error) {
         console.error('Erro ao carregar gráfico:', error);
     }
@@ -72,11 +70,11 @@ async function carregarGraficoPresenca() {
 // Renderizar gráfico com Chart.js
 function renderizarGrafico(data) {
     const ctx = document.getElementById('graficoPresenca').getContext('2d');
-    
+
     if (graficoPresenca) {
         graficoPresenca.destroy();
     }
-    
+
     graficoPresenca = new Chart(ctx, {
         type: 'bar',
         data: {
@@ -147,12 +145,12 @@ async function carregarFuncionarios() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) throw new Error('Erro ao carregar funcionários');
-        
+
         funcionariosData = await response.json();
         renderizarFuncionarios(funcionariosData);
-        
+
     } catch (error) {
         console.error('Erro ao carregar funcionários:', error);
         document.getElementById('funcionariosTableBody').innerHTML = `
@@ -164,14 +162,14 @@ async function carregarFuncionarios() {
 // Renderizar tabela de funcionários
 function renderizarFuncionarios(funcionarios) {
     const tbody = document.getElementById('funcionariosTableBody');
-    
+
     if (funcionarios.length === 0) {
         tbody.innerHTML = `
             <tr><td colspan="5" class="empty-state">Nenhum funcionário encontrado</td></tr>
         `;
         return;
     }
-    
+
     tbody.innerHTML = funcionarios.map(func => `
         <tr>
             <td>${func.nome}</td>
@@ -199,7 +197,7 @@ function formatarStatus(status) {
 
 // Buscar funcionários
 function buscarFuncionarios(termo) {
-    const filtrados = funcionariosData.filter(func => 
+    const filtrados = funcionariosData.filter(func =>
         func.nome.toLowerCase().includes(termo.toLowerCase()) ||
         func.email.toLowerCase().includes(termo.toLowerCase()) ||
         func.empresa.toLowerCase().includes(termo.toLowerCase())
@@ -216,12 +214,12 @@ async function carregarInconsistencias() {
                 'Authorization': `Bearer ${token}`
             }
         });
-        
+
         if (!response.ok) throw new Error('Erro ao carregar inconsistências');
-        
+
         inconsistenciasData = await response.json();
         renderizarInconsistencias(inconsistenciasData);
-        
+
     } catch (error) {
         console.error('Erro ao carregar inconsistências:', error);
         document.getElementById('inconsistenciasList').innerHTML = `
@@ -233,7 +231,7 @@ async function carregarInconsistencias() {
 // Renderizar inconsistências
 function renderizarInconsistencias(inconsistencias) {
     const container = document.getElementById('inconsistenciasList');
-    
+
     if (inconsistencias.length === 0) {
         container.innerHTML = `
             <div class="empty-state">
@@ -243,7 +241,7 @@ function renderizarInconsistencias(inconsistencias) {
         `;
         return;
     }
-    
+
     container.innerHTML = inconsistencias.map(inc => `
         <div class="inconsistencia-card ${inc.tipo.toLowerCase().replace('_', '-')}">
             <div class="inconsistencia-header">
@@ -288,17 +286,17 @@ function atualizarDashboard() {
 document.addEventListener('DOMContentLoaded', () => {
     verificarAutenticacao();
     atualizarDashboard();
-    
+
     // Busca de funcionários
     document.getElementById('searchFuncionarios').addEventListener('input', (e) => {
         buscarFuncionarios(e.target.value);
     });
-    
+
     // Filtro de inconsistências
     document.getElementById('filtroInconsistencias').addEventListener('change', (e) => {
         filtrarInconsistencias(e.target.value);
     });
-    
+
     // Atualização automática a cada 30 segundos
     setInterval(atualizarDashboard, 30000);
 });

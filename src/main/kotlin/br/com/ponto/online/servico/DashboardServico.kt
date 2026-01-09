@@ -83,7 +83,7 @@ class DashboardServico(
     }
 
     fun listarFuncionariosAtivos(): List<FuncionarioListagemDTO> {
-        val funcionarios = funcionarioRepositorio.findAll()
+        val funcionarios = funcionarioRepositorio.findAll().filter { it.ativo } // Filtrar apenas ativos
         val hoje = LocalDate.now()
         val inicioDoDia = hoje.atStartOfDay()
         val fimDoDia = hoje.atTime(23, 59, 59)
@@ -108,8 +108,11 @@ class DashboardServico(
             FuncionarioListagemDTO(
                 id = funcionario.id!!,
                 nome = funcionario.nome,
+                cpf = funcionario.cpf,
                 email = funcionario.email,
                 empresa = funcionario.empresa.razaoSocial,
+                role = funcionario.role.name,
+                ativo = funcionario.ativo,
                 ultimoRegistro = ultimoRegistro?.dataHora?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
                 statusHoje = statusHoje
             )

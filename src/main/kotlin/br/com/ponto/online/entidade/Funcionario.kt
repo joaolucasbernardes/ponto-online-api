@@ -29,7 +29,10 @@ class Funcionario(
 
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
-    val empresa: Empresa
+    val empresa: Empresa,
+
+    @Column(nullable = false)
+    var ativo: Boolean = true
 
 ) : UserDetails { // Implementa a interface UserDetails
 
@@ -58,6 +61,6 @@ class Funcionario(
     }
 
     override fun isEnabled(): Boolean {
-        return true // A conta está habilitada
+        return ativo // Retorna status de ativação
     }
 }

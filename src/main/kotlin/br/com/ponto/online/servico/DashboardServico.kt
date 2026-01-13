@@ -30,7 +30,7 @@ class DashboardServico(
         var totalHorasHoje = Duration.ZERO
         
         funcionarios.forEach { funcionario ->
-            val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetween(
+            val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(
                 funcionario.id!!,
                 inicioDoDia,
                 fimDoDia
@@ -89,11 +89,11 @@ class DashboardServico(
         val fimDoDia = hoje.atTime(23, 59, 59)
         
         return funcionarios.map { funcionario ->
-            val registrosHoje = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetween(
+            val registrosHoje = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(
                 funcionario.id!!,
                 inicioDoDia,
                 fimDoDia
-            ).sortedBy { it.dataHora }
+            )
             
             val ultimoRegistro = registroPontoRepositorio
                 .findByFuncionarioIdOrderByDataHoraDesc(funcionario.id!!)
@@ -131,11 +131,11 @@ class DashboardServico(
             val fimDoDia = data.atTime(23, 59, 59)
             
             funcionarios.forEach { funcionario ->
-                val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetween(
+                val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(
                     funcionario.id!!,
                     inicioDoDia,
                     fimDoDia
-                ).sortedBy { it.dataHora }
+                )
                 
                 // Verificar registro incompleto (1 ou 3 registros)
                 if (registros.size == 1 || registros.size == 3) {

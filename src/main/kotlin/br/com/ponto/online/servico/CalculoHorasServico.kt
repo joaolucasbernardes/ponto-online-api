@@ -22,11 +22,11 @@ class CalculoHorasServico(
     }
 
     fun calcularHorasDia(funcionarioId: Long, data: LocalDate): CalculoHorasDTO {
-        val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetween(
+        val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(
             funcionarioId,
             data.atStartOfDay(),
             data.plusDays(1).atStartOfDay()
-        ).sortedBy { it.dataHora }
+        )
 
         val registrosDTO = registros.map { RegistroPontoRespostaDTO.deEntidade(it) }
 
@@ -49,7 +49,7 @@ class CalculoHorasServico(
         val inicioDomes = LocalDate.of(ano, mes, 1)
         val fimDoMes = inicioDomes.plusMonths(1).minusDays(1)
 
-        val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetween(
+        val registros = registroPontoRepositorio.findByFuncionarioIdAndDataHoraBetweenOrderByDataHoraAsc(
             funcionarioId,
             inicioDomes.atStartOfDay(),
             fimDoMes.plusDays(1).atStartOfDay()

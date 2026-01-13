@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Ponto Manual - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="/css/registrar-ponto-manual.css">
+</head>
+
+<body>
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1 class="logo">📊 Ponto Online</h1>
+            <div class="navbar-menu">
+                <a href="/admin.html" class="nav-link">Dashboard</a>
+                <a href="/gerenciar-funcionarios.html" class="nav-link">Gerenciar Funcionários</a>
+                <a href="/registrar-ponto-manual.html" class="nav-link active">Registrar Ponto Manual</a>
+            </div>
+            <div class="navbar-user">
+                <span class="user-badge">Administrador</span>
+                <button onclick="logout()" class="btn-logout">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="manual-entry-container">
+        <div class="page-header">
+            <h1>📝 Registrar Ponto Manual</h1>
+            <p class="page-description">Registre pontos manualmente para funcionários que esqueceram de bater o ponto ou
+                precisam de ajustes.</p>
+        </div>
+
+        <div class="form-card">
+            <form id="formRegistroManual">
+                <div class="form-group">
+                    <label for="funcionarioSelect">
+                        Funcionário <span class="required">*</span>
+                    </label>
+                    <select id="funcionarioSelect" name="funcionario" required>
+                        <option value="">Selecione um funcionário...</option>
+                    </select>
+                    <small class="form-hint">Selecione o funcionário para o qual deseja registrar o ponto</small>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="dataRegistro">
+                            Data <span class="required">*</span>
+                        </label>
+                        <input type="date" id="dataRegistro" name="data" required>
+                        <small class="form-hint">Data do registro (permite datas passadas)</small>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="horaRegistro">
+                            Hora <span class="required">*</span>
+                        </label>
+                        <input type="time" id="horaRegistro" name="hora" required>
+                        <small class="form-hint">Hora do registro (formato 24h)</small>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>
+                        Tipo de Registro <span class="required">*</span>
+                    </label>
+                    <div class="radio-group">
+                        <label class="radio-label">
+                            <input type="radio" name="tipo" value="ENTRADA" checked>
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">🟢 Entrada</span>
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="tipo" value="SAIDA">
+                            <span class="radio-custom"></span>
+                            <span class="radio-text">🔴 Saída</span>
+                        </label>
+                    </div>
+                    <small class="form-hint">Selecione se é uma entrada ou saída</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="observacao">
+                        Observação (Opcional)
+                    </label>
+                    <textarea id="observacao" name="observacao" rows="3"
+                        placeholder="Ex: Funcionário esqueceu de bater o ponto na entrada..."></textarea>
+                    <small class="form-hint">Adicione uma observação sobre o motivo do registro manual</small>
+                </div>
+
+                <div class="form-actions">
+                    <button type="button" class="btn-secondary" onclick="limparFormulario()">
+                        🔄 Limpar
+                    </button>
+                    <button type="submit" class="btn-primary">
+                        ✅ Registrar Ponto
+                    </button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Histórico de Registros Manuais -->
+        <div class="history-section">
+            <h2>📋 Últimos Registros Manuais</h2>
+            <div class="history-list" id="historicoRegistros">
+                <div class="loading">Carregando histórico...</div>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/toast.js"></script>
+    <script src="/js/registrar-ponto-manual.js"></script>
+</body>
+
+</html>

@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('userName', data.nome);
 
-                alert(data.mensagem);
+                toast.success(data.mensagem);
 
                 // Redireciona baseado na role do usuário
                 if (data.role === 'ADMIN') {
@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
             })
             .catch(error => {
                 console.error('Erro na autenticação:', error);
-                alert(error.message);
+                toast.error(error.message);
             });
     });
 });

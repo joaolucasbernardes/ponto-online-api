@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', () => {
             elementoSaudacao.textContent = `Olá, ${nomeUsuario}!`;
         } else {
             elementoSaudacao.textContent = 'Olá!';
-            alert('Não foi possível identificar o usuário. Faça o login novamente.');
+            toast.error('Não foi possível identificar o usuário. Faça o login novamente.');
             window.location.href = '/login.html';
         }
 
@@ -58,7 +58,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const funcionarioId = localStorage.getItem('funcionario_id');
 
         if (!token || !funcionarioId) {
-            alert('Sessão expirada. Por favor, faça o login novamente.');
+            toast.error('Sessão expirada. Por favor, faça o login novamente.');
             window.location.href = '/login.html';
             return;
         }
@@ -78,7 +78,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         } catch (error) {
             console.error('Erro ao carregar registros:', error);
-            alert(error.message);
+            toast.error(error.message);
         }
     }
 
@@ -87,7 +87,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const funcionarioId = localStorage.getItem('funcionario_id');
 
         if (!token || !funcionarioId) {
-            alert('Sessão expirada. Faça login.');
+            toast.error('Sessão expirada. Faça login.');
             window.location.href = '/login.html';
             return;
         }
@@ -104,14 +104,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (!response.ok) {
                 const errorData = await response.json();
-                throw new Error(errorData.message || 'Erro ao registrar o ponto.');
+                throw new Error(errorData.mensagem || 'Erro ao registrar o ponto.');
             }
 
+            toast.success('Ponto registrado com sucesso!');
             await carregarRegistrosDoDia();
 
         } catch (error) {
             console.error('Erro no registro de ponto:', error);
-            alert(error.message);
+            toast.error(error.message);
         }
     });
 

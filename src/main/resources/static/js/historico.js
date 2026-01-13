@@ -242,12 +242,23 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function agruparRegistrosPorData(registros) {
-        return registros.reduce((acc, registro) => {
+        const agrupados = registros.reduce((acc, registro) => {
             const data = registro.dataHora.split(' ')[0];
             if (!acc[data]) acc[data] = [];
             acc[data].push(registro);
             return acc;
         }, {});
+
+        // Ordenar registros dentro de cada dia em ordem cronológica (mais antigo primeiro)
+        Object.keys(agrupados).forEach(data => {
+            agrupados[data].sort((a, b) => {
+                const horaA = a.dataHora.split(' ')[1];
+                const horaB = b.dataHora.split(' ')[1];
+                return horaA.localeCompare(horaB);
+            });
+        });
+
+        return agrupados;
     }
 
     function formatarDataParaExibicao(dataString) {

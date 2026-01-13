@@ -45,6 +45,7 @@ class SegurancaConfig(
                 // Páginas protegidas - requerem autenticação
                 authorize("/admin.html", hasRole("ADMIN"))
                 authorize("/gerenciar-funcionarios.html", hasRole("ADMIN"))
+                authorize("/registrar-ponto-manual.html", hasRole("ADMIN"))
                 authorize("/principal.html", authenticated)
                 authorize("/historico.html", authenticated)
                 

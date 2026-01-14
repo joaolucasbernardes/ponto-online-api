@@ -13,6 +13,9 @@ class RegistroPonto(
     @Column(name = "data_hora", nullable = false)
     val dataHora: LocalDateTime = LocalDateTime.now(),
 
+    @Column(name = "tipo", nullable = false, length = 10)
+    val tipo: String, // "ENTRADA" ou "SAIDA"
+
     @ManyToOne
     @JoinColumn(name = "funcionario_id", nullable = false)
     val funcionario: Funcionario

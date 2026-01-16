@@ -36,7 +36,7 @@ async function carregarFuncionarios() {
     }
 
     try {
-        const response = await fetch('http://localhost:8080/api/admin/dashboard/funcionarios-ativos', {
+        const response = await fetch('/api/admin/dashboard/funcionarios-ativos', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
 
@@ -87,7 +87,7 @@ async function handleSubmit(event) {
     const token = localStorage.getItem('token');
 
     try {
-        const response = await fetch('http://localhost:8080/registros-ponto', {
+        const response = await fetch('/registros-ponto', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -146,7 +146,7 @@ async function carregarHistorico() {
 
     try {
         // Get all employees to build a map of ID -> name
-        const funcionariosResponse = await fetch('http://localhost:8080/api/admin/dashboard/funcionarios-ativos', {
+        const funcionariosResponse = await fetch('/api/admin/dashboard/funcionarios-ativos', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
         const funcionarios = await funcionariosResponse.json();

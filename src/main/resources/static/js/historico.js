@@ -40,7 +40,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}`, {
+        fetch(`/registros-ponto/funcionario/${funcionarioId}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${token}` }
         })

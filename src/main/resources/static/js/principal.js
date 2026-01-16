@@ -64,7 +64,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/hoje`, {
+            const response = await fetch(`/registros-ponto/funcionario/${funcionarioId}/hoje`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         try {
-            const response = await fetch('http://localhost:8080/registros-ponto', {
+            const response = await fetch('/registros-ponto', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -124,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         try {
             // Buscar cálculo do dia
-            const responseDia = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/horas/dia`, {
+            const responseDia = await fetch(`/registros-ponto/funcionario/${funcionarioId}/horas/dia`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 
@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             // Buscar resumo mensal
-            const responseMes = await fetch(`http://localhost:8080/registros-ponto/funcionario/${funcionarioId}/horas/mes`, {
+            const responseMes = await fetch(`/registros-ponto/funcionario/${funcionarioId}/horas/mes`, {
                 headers: { 'Authorization': `Bearer ${token}` }
             });
 

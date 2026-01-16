@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,72 +8,75 @@
     <link rel="stylesheet" href="/css/estilos.css">
     <link rel="stylesheet" href="/css/toast.css">
 </head>
+
 <body>
 
-<header class="app-header">
-    <div class="container">
-        <h1 class="logo">Ponto Online</h1>
-        <nav>
-            <a href="/historico.html" class="nav-link">Meu Histórico</a>
-            <a href="/login.html" id="btn-sair" class="nav-link">Sair</a>
-        </nav>
-    </div>
-</header>
-
-<main class="container">
-    <section class="painel-bater-ponto">
-        <h2 id="saudacao">Olá, [Nome do Funcionário]!</h2>
-        <p id="data-atual">25 de Setembro de 2025</p>
-        <button id="btnBaterPonto" class="btn-ponto">Bater Ponto</button>
-    </section>
-
-    <section class="registros-do-dia">
-        <h3>Registros de Hoje</h3>
-        <div class="quadro-registros">
-            <div class="registro-item">
-                <span class="tipo-registro">Entrada</span>
-                <span class="hora-registro" id="hora-entrada">--:--</span>
-            </div>
-            <div class="registro-item">
-                <span class="tipo-registro">Saída Almoço</span>
-                <span class="hora-registro" id="hora-saida-almoco">--:--</span>
-            </div>
-            <div class="registro-item">
-                <span class="tipo-registro">Retorno Almoço</span>
-                <span class="hora-registro" id="hora-retorno-almoco">--:--</span>
-            </div>
-            <div class="registro-item">
-                <span class="tipo-registro">Saída</span>
-                <span class="hora-registro" id="hora-saida">--:--</span>
-            </div>
+    <header class="app-header">
+        <div class="container">
+            <h1 class="logo">Ponto Online</h1>
+            <nav>
+                <a href="/historico.html" class="nav-link">Meu Histórico</a>
+                <a href="/justificar-ausencia.html" class="nav-link">Justificar Ausência</a>
+                <a href="/login.html" id="btn-sair" class="nav-link">Sair</a>
+            </nav>
         </div>
-    </section>
+    </header>
 
-    <section class="resumo-horas">
-        <h3>Resumo do Dia</h3>
-        <div class="quadro-resumo">
-            <div class="resumo-item">
-                <span class="label-resumo">Horas Trabalhadas</span>
-                <span class="valor-resumo" id="horas-trabalhadas">00:00</span>
-            </div>
-            <div class="resumo-item">
-                <span class="label-resumo">Intervalo Almoço</span>
-                <span class="valor-resumo" id="intervalo-almoco">00:00</span>
-            </div>
-            <div class="resumo-item">
-                <span class="label-resumo">Saldo do Dia</span>
-                <span class="valor-resumo saldo" id="saldo-dia">+00:00</span>
-            </div>
-            <div class="resumo-item">
-                <span class="label-resumo">Banco de Horas (Mês)</span>
-                <span class="valor-resumo saldo" id="banco-horas">+00:00</span>
-            </div>
-        </div>
-    </section>
-</main>
+    <main class="container">
+        <section class="painel-bater-ponto">
+            <h2 id="saudacao">Olá, [Nome do Funcionário]!</h2>
+            <p id="data-atual">25 de Setembro de 2025</p>
+            <button id="btnBaterPonto" class="btn-ponto">Bater Ponto</button>
+        </section>
 
-<script src="js/toast.js"></script>
-<script src="js/principal.js"></script>
+        <section class="registros-do-dia">
+            <h3>Registros de Hoje</h3>
+            <div class="quadro-registros">
+                <div class="registro-item">
+                    <span class="tipo-registro">Entrada</span>
+                    <span class="hora-registro" id="hora-entrada">--:--</span>
+                </div>
+                <div class="registro-item">
+                    <span class="tipo-registro">Saída Almoço</span>
+                    <span class="hora-registro" id="hora-saida-almoco">--:--</span>
+                </div>
+                <div class="registro-item">
+                    <span class="tipo-registro">Retorno Almoço</span>
+                    <span class="hora-registro" id="hora-retorno-almoco">--:--</span>
+                </div>
+                <div class="registro-item">
+                    <span class="tipo-registro">Saída</span>
+                    <span class="hora-registro" id="hora-saida">--:--</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="resumo-horas">
+            <h3>Resumo do Dia</h3>
+            <div class="quadro-resumo">
+                <div class="resumo-item">
+                    <span class="label-resumo">Horas Trabalhadas</span>
+                    <span class="valor-resumo" id="horas-trabalhadas">00:00</span>
+                </div>
+                <div class="resumo-item">
+                    <span class="label-resumo">Intervalo Almoço</span>
+                    <span class="valor-resumo" id="intervalo-almoco">00:00</span>
+                </div>
+                <div class="resumo-item">
+                    <span class="label-resumo">Saldo do Dia</span>
+                    <span class="valor-resumo saldo" id="saldo-dia">+00:00</span>
+                </div>
+                <div class="resumo-item">
+                    <span class="label-resumo">Banco de Horas (Mês)</span>
+                    <span class="valor-resumo saldo" id="banco-horas">+00:00</span>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="js/toast.js"></script>
+    <script src="js/principal.js"></script>
 
 </body>
+
 </html>

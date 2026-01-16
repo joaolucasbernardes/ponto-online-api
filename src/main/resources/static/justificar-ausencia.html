@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justificar Ausência - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/toast.css">
+    <link rel="stylesheet" href="/css/justificar-ausencia.css">
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div class="container">
+            <h1 class="logo">Ponto Online</h1>
+            <nav>
+                <a href="/principal.html" class="nav-link">Início</a>
+                <a href="/historico.html" class="nav-link">Meu Histórico</a>
+                <a href="/login.html" id="btn-sair" class="nav-link">Sair</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="justificativa-container">
+            <div class="page-header">
+                <h2>📝 Justificar Ausência ou Ajuste</h2>
+                <p class="subtitle">Solicite justificativa para ausências ou ajustes de ponto</p>
+            </div>
+
+            <div class="form-card">
+                <form id="formJustificativa">
+                    <div class="form-group">
+                        <label for="tipoJustificativa">Tipo de Justificativa *</label>
+                        <select id="tipoJustificativa" required>
+                            <option value="">Selecione o tipo</option>
+                            <option value="AUSENCIA">Ausência (Falta)</option>
+                            <option value="ATRASO">Atraso</option>
+                            <option value="AJUSTE_PONTO">Ajuste de Ponto</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dataJustificativa">Data *</label>
+                        <input type="date" id="dataJustificativa" required>
+                    </div>
+
+                    <div id="camposAjuste" class="ajuste-fields" style="display: none;">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="horaOriginal">Hora Original</label>
+                                <input type="time" id="horaOriginal">
+                            </div>
+                            <div class="form-group">
+                                <label for="horaSolicitada">Hora Solicitada *</label>
+                                <input type="time" id="horaSolicitada">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="motivo">Motivo da Justificativa *</label>
+                        <textarea id="motivo" rows="5" placeholder="Descreva o motivo da sua justificativa..."
+                            maxlength="1000" required></textarea>
+                        <small class="char-count">0/1000 caracteres</small>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn-secondary" onclick="limparFormulario()">Limpar</button>
+                        <button type="submit" class="btn-primary">Enviar Justificativa</button>
+                    </div>
+                </form>
+            </div>
+
+            <div class="minhas-justificativas">
+                <h3>📋 Minhas Justificativas</h3>
+                <div id="listaJustificativas" class="justificativas-list">
+                    <div class="loading">Carregando...</div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <script src="/js/toast.js"></script>
+    <script src="/js/justificar-ausencia.js"></script>
+
+</body>
+
+</html>

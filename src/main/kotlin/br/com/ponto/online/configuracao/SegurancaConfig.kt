@@ -48,10 +48,13 @@ class SegurancaConfig(
                 authorize("/registrar-ponto-manual.html", hasRole("ADMIN"))
                 authorize("/principal.html", authenticated)
                 authorize("/historico.html", authenticated)
+                authorize("/justificar-ausencia.html", authenticated)
                 
                 // APIs protegidas por ADMIN
                 authorize("/api/admin/**", hasRole("ADMIN"))
                 authorize("/api/funcionarios/**", hasRole("ADMIN"))
+                authorize("/api/justificativas/pendentes", hasRole("ADMIN"))
+                authorize("/api/justificativas/*/processar", hasRole("ADMIN"))
                 
                 // APIs protegidas (requerem autenticação)
                 authorize("/api/**", authenticated)

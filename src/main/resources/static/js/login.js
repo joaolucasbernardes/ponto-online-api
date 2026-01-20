@@ -44,6 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 localStorage.setItem('token', data.token);
                 localStorage.setItem('role', data.role);
                 localStorage.setItem('userName', data.nome);
+                localStorage.setItem('userId', data.funcionarioId); // Para aprovar-justificativas.js
 
                 toast.success(data.mensagem);
 

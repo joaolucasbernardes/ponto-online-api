@@ -84,6 +84,10 @@ class JustificativaServico(
         return justificativaRepositorio.findByFuncionarioIdOrderByDataCriacaoDesc(funcionarioId)
     }
     
+    fun listarTodas(): List<Justificativa> {
+        return justificativaRepositorio.findAll().sortedByDescending { it.dataCriacao }
+    }
+    
     fun listarPendentes(): List<Justificativa> {
         return justificativaRepositorio.findByStatusOrderByDataCriacaoAsc(StatusJustificativa.PENDENTE)
     }

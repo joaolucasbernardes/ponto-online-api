@@ -21,6 +21,13 @@ class JustificativaControle(
         return ResponseEntity.status(HttpStatus.CREATED).body(respostaDTO)
     }
     
+    @GetMapping
+    fun listarTodas(): ResponseEntity<List<JustificativaRespostaDTO>> {
+        val justificativas = justificativaServico.listarTodas()
+        val respostaDTOs = justificativas.map { JustificativaRespostaDTO.deEntidade(it) }
+        return ResponseEntity.ok(respostaDTOs)
+    }
+    
     @GetMapping("/funcionario/{funcionarioId}")
     fun listarPorFuncionario(@PathVariable funcionarioId: Long): ResponseEntity<List<JustificativaRespostaDTO>> {
         val justificativas = justificativaServico.listarPorFuncionario(funcionarioId)
@@ -41,7 +48,7 @@ class JustificativaControle(
         return ResponseEntity.ok(mapOf("count" to count))
     }
     
-    @PutMapping("/{id}/processar")
+    @PostMapping("/{id}/processar")
     fun processarJustificativa(
         @PathVariable id: Long,
         @RequestBody aprovacaoDTO: AprovacaoJustificativaDTO

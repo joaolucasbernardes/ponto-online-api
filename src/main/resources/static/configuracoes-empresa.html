@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurações da Empresa - Ponto Online</title>
+    <link rel="stylesheet" href="/css/configuracoes-empresa.css">
+    <link rel="stylesheet" href="/css/toast.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <span class="logo">⚙️ Configurações da Empresa</span>
+                <p class="subtitle">Gerencie horários, feriados e políticas da empresa</p>
+            </div>
+            <div class="header-right">
+                <button class="btn-secondary" onclick="window.location.href='/admin.html'">← Voltar ao Dashboard</button>
+                <button class="btn-danger" id="btnSair">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <!-- Botão Salvar Fixo -->
+        <div class="save-bar">
+            <button class="btn-primary btn-save" id="btnSalvar">
+                <span>💾 Salvar Configurações</span>
+            </button>
+        </div>
+
+        <!-- Seção: Horário de Trabalho -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>🕐 Horário de Trabalho Padrão</h2>
+                <p>Defina os horários padrão de trabalho da empresa</p>
+            </div>
+            <div class="section-content">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="horaEntrada">Hora de Entrada</label>
+                        <input type="time" id="horaEntrada" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaSaidaAlmoco">Saída para Almoço</label>
+                        <input type="time" id="horaSaidaAlmoco" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaRetornoAlmoco">Retorno do Almoço</label>
+                        <input type="time" id="horaRetornoAlmoco" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="horaSaida">Hora de Saída</label>
+                        <input type="time" id="horaSaida" class="form-control" required>
+                    </div>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="cargaHorariaDiaria">Carga Horária Diária (horas)</label>
+                        <input type="number" id="cargaHorariaDiaria" class="form-control" min="1" max="24" step="0.5" required>
+                        <small class="form-hint">Exemplo: 8 horas</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="cargaHorariaSemanal">Carga Horária Semanal (horas)</label>
+                        <input type="number" id="cargaHorariaSemanal" class="form-control" min="1" max="168" step="0.5" required>
+                        <small class="form-hint">Exemplo: 40 horas</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Dias Úteis -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>📅 Dias Úteis</h2>
+                <p>Selecione os dias da semana em que a empresa funciona</p>
+            </div>
+            <div class="section-content">
+                <div class="days-grid">
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaSegunda" checked>
+                        <span class="day-label">Segunda-feira</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaTerca" checked>
+                        <span class="day-label">Terça-feira</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaQuarta" checked>
+                        <span class="day-label">Quarta-feira</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaQuinta" checked>
+                        <span class="day-label">Quinta-feira</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaSexta" checked>
+                        <span class="day-label">Sexta-feira</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaSabado">
+                        <span class="day-label">Sábado</span>
+                    </label>
+                    <label class="day-checkbox">
+                        <input type="checkbox" id="diaDomingo">
+                        <span class="day-label">Domingo</span>
+                    </label>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Tolerâncias -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>⏱️ Tolerâncias</h2>
+                <p>Defina os minutos de tolerância para atrasos</p>
+            </div>
+            <div class="section-content">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="toleranciaEntrada">Tolerância de Entrada (minutos)</label>
+                        <input type="number" id="toleranciaEntrada" class="form-control" min="0" max="60" required>
+                        <small class="form-hint">Exemplo: 10 minutos</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="toleranciaRetorno">Tolerância de Retorno do Almoço (minutos)</label>
+                        <input type="number" id="toleranciaRetorno" class="form-control" min="0" max="60" required>
+                        <small class="form-hint">Exemplo: 10 minutos</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Intervalo de Almoço -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>🍽️ Intervalo de Almoço</h2>
+                <p>Configure o intervalo mínimo e máximo permitido</p>
+            </div>
+            <div class="section-content">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="intervaloMinimo">Intervalo Mínimo (minutos)</label>
+                        <input type="number" id="intervaloMinimo" class="form-control" min="30" max="240" required>
+                        <small class="form-hint">Exemplo: 60 minutos (1 hora)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="intervaloMaximo">Intervalo Máximo (minutos)</label>
+                        <input type="number" id="intervaloMaximo" class="form-control" min="30" max="240" required>
+                        <small class="form-hint">Exemplo: 120 minutos (2 horas)</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Horas Extras -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>⏰ Horas Extras</h2>
+                <p>Configure as políticas de horas extras da empresa</p>
+            </div>
+            <div class="section-content">
+                <div class="form-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="permiteHorasExtras" checked>
+                        <span class="toggle-text">Permitir Horas Extras</span>
+                    </label>
+                </div>
+                <div class="form-grid" id="horasExtrasConfig">
+                    <div class="form-group">
+                        <label for="limiteDiario">Limite Diário (horas)</label>
+                        <input type="number" id="limiteDiario" class="form-control" min="0" max="12" step="0.5" required>
+                        <small class="form-hint">Exemplo: 2 horas</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="limiteMensal">Limite Mensal (horas)</label>
+                        <input type="number" id="limiteMensal" class="form-control" min="0" max="200" step="0.5" required>
+                        <small class="form-hint">Exemplo: 40 horas</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="percentualHoraExtra">Percentual de Acréscimo (%)</label>
+                        <input type="number" id="percentualHoraExtra" class="form-control" min="0" max="200" required>
+                        <small class="form-hint">Exemplo: 50% (hora extra normal)</small>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Seção: Feriados -->
+        <section class="config-section">
+            <div class="section-header">
+                <h2>🎉 Gerenciar Feriados</h2>
+                <p>Cadastre e gerencie os feriados da empresa</p>
+            </div>
+            <div class="section-content">
+                <div class="feriados-header">
+                    <button class="btn-primary" id="btnNovoFeriado">+ Novo Feriado</button>
+                </div>
+                <div class="table-container">
+                    <table class="feriados-table">
+                        <thead>
+                            <tr>
+                                <th>Nome</th>
+                                <th>Data</th>
+                                <th>Tipo</th>
+                                <th>Recorrente</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feriadosTableBody">
+                            <tr class="empty-state">
+                                <td colspan="5">Carregando feriados...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Modal: Novo/Editar Feriado -->
+    <div class="modal" id="modalFeriado">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 id="modalFeriadoTitulo">Novo Feriado</h3>
+                <button class="modal-close" onclick="fecharModalFeriado()">×</button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="feriadoId">
+                <div class="form-group">
+                    <label for="feriadoNome">Nome do Feriado *</label>
+                    <input type="text" id="feriadoNome" class="form-control" placeholder="Ex: Natal" required>
+                </div>
+                <div class="form-group">
+                    <label for="feriadoData">Data *</label>
+                    <input type="date" id="feriadoData" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="feriadoTipo">Tipo *</label>
+                    <select id="feriadoTipo" class="form-control" required>
+                        <option value="NACIONAL">Nacional</option>
+                        <option value="ESTADUAL">Estadual</option>
+                        <option value="MUNICIPAL">Municipal</option>
+                        <option value="FACULTATIVO">Facultativo</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="toggle-label">
+                        <input type="checkbox" id="feriadoRecorrente" checked>
+                        <span class="toggle-text">Feriado Recorrente (repete todo ano)</span>
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="fecharModalFeriado()">Cancelar</button>
+                <button class="btn-primary" id="btnSalvarFeriado">Salvar Feriado</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toast-container"></div>
+
+    <script src="/js/toast.js"></script>
+    <script src="/js/configuracoes-empresa.js"></script>
+</body>
+</html>

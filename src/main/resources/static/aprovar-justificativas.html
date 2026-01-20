@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprovar Justificativas - Ponto Online</title>
+    <link rel="stylesheet" href="/css/aprovar-justificativas.css">
+    <link rel="stylesheet" href="/css/toast.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="header-left">
+                <h1>📋 Aprovar Justificativas</h1>
+                <p class="subtitle">Gerencie solicitações de justificativas dos funcionários</p>
+            </div>
+            <div class="header-right">
+                <button class="btn-secondary" onclick="window.location.href='/admin.html'">← Voltar ao Dashboard</button>
+                <button class="btn-danger" onclick="logout()">Sair</button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Statistics Cards -->
+    <section class="statistics">
+        <div class="stat-card pending">
+            <div class="stat-icon">⏳</div>
+            <div class="stat-info">
+                <div class="stat-value" id="statPendentes">0</div>
+                <div class="stat-label">Pendentes</div>
+            </div>
+        </div>
+        <div class="stat-card approved">
+            <div class="stat-icon">✅</div>
+            <div class="stat-info">
+                <div class="stat-value" id="statAprovadas">0</div>
+                <div class="stat-label">Aprovadas Hoje</div>
+            </div>
+        </div>
+        <div class="stat-card rejected">
+            <div class="stat-icon">❌</div>
+            <div class="stat-info">
+                <div class="stat-value" id="statRejeitadas">0</div>
+                <div class="stat-label">Rejeitadas Hoje</div>
+            </div>
+        </div>
+        <div class="stat-card total">
+            <div class="stat-icon">📊</div>
+            <div class="stat-info">
+                <div class="stat-value" id="statTotal">0</div>
+                <div class="stat-label">Total</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="filters">
+        <div class="filter-group">
+            <label for="filtroStatus">Status:</label>
+            <select id="filtroStatus">
+                <option value="">Todos</option>
+                <option value="PENDENTE" selected>Pendentes</option>
+                <option value="APROVADA">Aprovadas</option>
+                <option value="REJEITADA">Rejeitadas</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filtroTipo">Tipo:</label>
+            <select id="filtroTipo">
+                <option value="">Todos</option>
+                <option value="AUSENCIA">Ausência</option>
+                <option value="ATRASO">Atraso</option>
+                <option value="AJUSTE_PONTO">Ajuste de Ponto</option>
+            </select>
+        </div>
+        <div class="filter-group">
+            <label for="filtroBusca">Buscar Funcionário:</label>
+            <input type="text" id="filtroBusca" placeholder="Nome do funcionário...">
+        </div>
+        <button class="btn-primary" onclick="aplicarFiltros()">🔍 Filtrar</button>
+        <button class="btn-secondary" onclick="limparFiltros()">🔄 Limpar</button>
+    </section>
+
+    <!-- Justifications List -->
+    <section class="justifications-container">
+        <div id="listaJustificativas" class="justifications-list">
+            <!-- Justifications will be loaded here -->
+        </div>
+    </section>
+
+    <!-- Modal - Rejeitar Justificativa -->
+    <div id="modalRejeitar" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>❌ Rejeitar Justificativa</h2>
+                <button class="modal-close" onclick="fecharModalRejeitar()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p>Informe o motivo da rejeição:</p>
+                <textarea id="motivoRejeicao" rows="4" placeholder="Digite o motivo da rejeição..." maxlength="500"></textarea>
+                <div class="char-counter">
+                    <span id="charCount">0</span>/500 caracteres
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="fecharModalRejeitar()">Cancelar</button>
+                <button class="btn-danger" onclick="confirmarRejeicao()">Rejeitar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal - Histórico de Alterações -->
+    <div id="modalHistorico" class="modal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2>📜 Histórico de Alterações</h2>
+                <button class="modal-close" onclick="fecharModalHistorico()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="historicoConteudo" class="historico-timeline">
+                    <!-- History will be loaded here -->
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-secondary" onclick="fecharModalHistorico()">Fechar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="/js/toast.js"></script>
+    <script src="/js/aprovar-justificativas.js"></script>
+</body>
+</html>

@@ -18,5 +18,22 @@ class RegistroPonto(
 
     @ManyToOne
     @JoinColumn(name = "funcionario_id", nullable = false)
-    val funcionario: Funcionario
+    val funcionario: Funcionario,
+    
+    // Campos de geolocalização
+    @Column(name = "latitude")
+    val latitude: Double? = null,
+    
+    @Column(name = "longitude")
+    val longitude: Double? = null,
+    
+    @Column(name = "precisao_metros")
+    val precisaoMetros: Double? = null,
+    
+    @Column(name = "dentro_do_raio")
+    val dentroDoRaio: Boolean? = null,
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "local_permitido_id")
+    val localPermitido: LocalPermitido? = null
 )

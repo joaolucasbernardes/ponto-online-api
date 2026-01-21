@@ -169,6 +169,172 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    // ===== GEOLOCALIZAÇÃO =====
+    let coordenadasAtuais = null;
+
+    const btnObterLocalizacao = document.querySelector('#btnObterLocalizacao');
+    const geoStatus = document.querySelector('#geoStatus');
+    const geoInfo = document.querySelector('#geoInfo');
+
+    btnObterLocalizacao.addEventListener('click', obterLocalizacao);
+
+    async function obterLocalizacao() {
+        if (!navigator.geolocation) {
+            exibirStatusGeo('error', 'Geolocalização não suportada pelo navegador');
+            return;
+        }
+
+        exibirStatusGeo('info', 'Obtendo localização...');
+        btnObterLocalizacao.disabled = true;
+
+        try {
+            const position = await new Promise((resolve, reject) => {
+                navigator.geolocation.getCurrentPosition(resolve, reject, {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 0
+                });
+            });
+
+            coordenadasAtuais = {
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                precisaoMetros: position.coords.accuracy
+            };
+
+            // Validar localização com o backend
+            await validarLocalizacao(coordenadasAtuais);
+
+        } catch (error) {
+            let mensagem = 'Erro ao obter localização';
+            if (error.code === 1) {
+                mensagem = 'Permissão de localização negada';
+            } else if (error.code === 2) {
+                mensagem = 'Localização indisponível';
+            } else if (error.code === 3) {
+                mensagem = 'Tempo esgotado ao obter localização';
+            }
+            exibirStatusGeo('error', mensagem);
+            console.error('Erro de geolocalização:', error);
+        } finally {
+            btnObterLocalizacao.disabled = false;
+        }
+    }
+
+    async function validarLocalizacao(coords) {
+        const token = localStorage.getItem('jwt_token');
+
+        try {
+            const response = await fetch('/api/geolocalizacao/validar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(coords)
+            });
+
+            if (!response.ok) {
+                throw new Error('Erro ao validar localização');
+            }
+
+            const resultado = await response.json();
+            exibirResultadoValidacao(resultado, coords);
+
+        } catch (error) {
+            console.error('Erro ao validar localização:', error);
+            exibirStatusGeo('error', 'Erro ao validar localização com o servidor');
+        }
+    }
+
+    function exibirResultadoValidacao(resultado, coords) {
+        // Atualizar status
+        if (resultado.valido) {
+            exibirStatusGeo('success', resultado.mensagem);
+        } else {
+            exibirStatusGeo('warning', resultado.mensagem);
+        }
+
+        // Exibir informações
+        document.querySelector('#coordenadas').textContent =
+            `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
+
+        document.querySelector('#precisao').textContent =
+            `±${Math.round(coords.precisaoMetros)}m`;
+
+        document.querySelector('#localPermitido').textContent =
+            resultado.localPermitido ? resultado.localPermitido.nome : 'Nenhum';
+
+        const statusElement = document.querySelector('#statusValidacao');
+        if (resultado.valido) {
+            statusElement.textContent = '✓ Válido';
+            statusElement.className = 'info-value status valido';
+        } else {
+            statusElement.textContent = '✗ Fora do raio';
+            statusElement.className = 'info-value status invalido';
+        }
+
+        geoInfo.style.display = 'block';
+    }
+
+    function exibirStatusGeo(tipo, mensagem) {
+        geoStatus.className = 'geo-status ' + tipo;
+        geoStatus.querySelector('.geo-message').textContent = mensagem;
+    }
+
+    // Atualizar função de bater ponto para incluir coordenadas
+    const btnBaterPontoOriginal = btnBaterPonto.onclick;
+    btnBaterPonto.onclick = null;
+
+    btnBaterPonto.addEventListener('click', async () => {
+        const token = localStorage.getItem('jwt_token');
+        const funcionarioId = localStorage.getItem('funcionario_id');
+
+        if (!token || !funcionarioId) {
+            toast.error('Sessão expirada. Faça login.');
+            window.location.href = '/login.html';
+            return;
+        }
+
+        // Preparar dados do registro
+        const dadosRegistro = { funcionarioId };
+
+        // Incluir coordenadas se disponíveis
+        if (coordenadasAtuais) {
+            dadosRegistro.latitude = coordenadasAtuais.latitude;
+            dadosRegistro.longitude = coordenadasAtuais.longitude;
+            dadosRegistro.precisaoMetros = coordenadasAtuais.precisaoMetros;
+        }
+
+        try {
+            const response = await fetch('/registros-ponto', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(dadosRegistro)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.mensagem || 'Erro ao registrar o ponto.');
+            }
+
+            toast.success('Ponto registrado com sucesso!');
+            await carregarRegistrosDoDia();
+
+            // Limpar coordenadas após registro
+            coordenadasAtuais = null;
+            geoInfo.style.display = 'none';
+            exibirStatusGeo('info', 'Clique no botão abaixo para obter sua localização');
+
+        } catch (error) {
+            console.error('Erro no registro de ponto:', error);
+            toast.error(error.message);
+        }
+    });
+
     configurarCabecalho();
     carregarRegistrosDoDia().then(() => carregarResumoHoras());
 });

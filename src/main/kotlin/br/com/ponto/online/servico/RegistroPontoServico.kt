@@ -14,7 +14,8 @@ import java.util.NoSuchElementException
 @Service
 class RegistroPontoServico(
     private val registroPontoRepositorio: RegistroPontoRepositorio,
-    private val funcionarioRepositorio: FuncionarioRepositorio
+    private val funcionarioRepositorio: FuncionarioRepositorio,
+    private val geolocalizacaoServico: GeolocalizacaoServico
 ) {
     fun registrar(requisicaoDTO: RegistroPontoRequisicaoDTO): RegistroPonto {
         val funcionario = funcionarioRepositorio.findById(requisicaoDTO.funcionarioId)
@@ -108,11 +109,29 @@ class RegistroPontoServico(
             }
         }
 
+        // VALIDAÇÃO 6: Processar geolocalização (se fornecida)
+        var localPermitido: br.com.ponto.online.entidade.LocalPermitido? = null
+        var dentroDoRaio: Boolean? = null
+        
+        if (requisicaoDTO.latitude != null && requisicaoDTO.longitude != null) {
+            val (local, _) = geolocalizacaoServico.validarLocalizacao(
+                requisicaoDTO.latitude,
+                requisicaoDTO.longitude
+            )
+            localPermitido = local
+            dentroDoRaio = local != null
+        }
+
         // Criar e salvar o registro
         val novoRegistro = RegistroPonto(
             funcionario = funcionario,
             dataHora = dataHoraRegistro,
-            tipo = tipoRegistro
+            tipo = tipoRegistro,
+            latitude = requisicaoDTO.latitude,
+            longitude = requisicaoDTO.longitude,
+            precisaoMetros = requisicaoDTO.precisaoMetros,
+            dentroDoRaio = dentroDoRaio,
+            localPermitido = localPermitido
         )
 
         return registroPontoRepositorio.save(novoRegistro)

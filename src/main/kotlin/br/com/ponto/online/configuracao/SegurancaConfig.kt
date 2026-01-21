@@ -48,6 +48,7 @@ class SegurancaConfig(
                 authorize("/registrar-ponto-manual.html", hasRole("ADMIN"))
                 authorize("/aprovar-justificativas.html", hasRole("ADMIN"))
                 authorize("/configuracoes-empresa.html", hasRole("ADMIN"))
+                authorize("/gerenciar-locais.html", hasRole("ADMIN"))
                 authorize("/principal.html", authenticated)
                 authorize("/historico.html", authenticated)
                 authorize("/justificar-ausencia.html", authenticated)
@@ -59,6 +60,7 @@ class SegurancaConfig(
                 authorize("/api/justificativas/*/processar", hasRole("ADMIN"))
                 authorize("/api/configuracoes/**", hasRole("ADMIN"))
                 authorize("/api/feriados/**", hasRole("ADMIN"))
+                authorize("/api/locais-permitidos/**", hasRole("ADMIN"))
                 
                 // APIs protegidas (requerem autenticação)
                 authorize("/api/**", authenticated)

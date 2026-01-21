@@ -693,3 +693,140 @@ main {
 .mb-4 {
     margin-bottom: var(--space-xl);
 }
+
+/* ========================================
+   📍 GEOLOCALIZAÇÃO
+   ======================================== */
+
+.painel-geolocalizacao {
+    background: rgba(26, 33, 66, 0.6);
+    backdrop-filter: blur(10px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: var(--space-xl);
+    margin-bottom: var(--space-xl);
+    box-shadow: var(--shadow-lg);
+}
+
+.painel-geolocalizacao h3 {
+    margin-bottom: var(--space-lg);
+    color: var(--text-primary);
+}
+
+.geo-status {
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+    margin-bottom: var(--space-md);
+    text-align: center;
+}
+
+.geo-status.success {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: var(--success);
+}
+
+.geo-status.error {
+    background: rgba(239, 68, 68, 0.1);
+    border-color: var(--danger);
+}
+
+.geo-status.warning {
+    background: rgba(245, 158, 11, 0.1);
+    border-color: var(--warning);
+}
+
+.geo-message {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9375rem;
+}
+
+.geo-status.success .geo-message {
+    color: var(--success);
+}
+
+.geo-status.error .geo-message {
+    color: var(--danger);
+}
+
+.geo-status.warning .geo-message {
+    color: var(--warning);
+}
+
+.btn-secondary {
+    padding: var(--space-md) var(--space-xl);
+    background: var(--bg-input);
+    border: 2px solid var(--border-color);
+    border-radius: var(--radius-md);
+    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all var(--transition-base);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    width: 100%;
+}
+
+.btn-secondary:hover {
+    border-color: var(--accent-primary);
+    background: rgba(99, 102, 241, 0.1);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.btn-secondary:active {
+    transform: translateY(0);
+}
+
+.geo-info {
+    margin-top: var(--space-lg);
+    background: var(--bg-input);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    padding: var(--space-lg);
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: var(--space-sm) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.info-value {
+    font-size: 0.9375rem;
+    color: var(--text-primary);
+    font-weight: 600;
+}
+
+.info-value.status {
+    padding: var(--space-xs) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-size: 0.8125rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-value.status.valido {
+    background: rgba(16, 185, 129, 0.2);
+    color: var(--success);
+}
+
+.info-value.status.invalido {
+    background: rgba(239, 68, 68, 0.2);
+    color: var(--danger);
+}

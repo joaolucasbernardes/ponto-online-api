@@ -29,6 +29,33 @@
             <button id="btnBaterPonto" class="btn-ponto">Bater Ponto</button>
         </section>
 
+        <!-- Seção de Geolocalização -->
+        <section class="painel-geolocalizacao">
+            <h3>📍 Localização</h3>
+            <div class="geo-status" id="geoStatus">
+                <p class="geo-message">Clique no botão abaixo para obter sua localização</p>
+            </div>
+            <button id="btnObterLocalizacao" class="btn-secondary">📍 Obter Localização</button>
+            <div class="geo-info" id="geoInfo" style="display: none;">
+                <div class="info-item">
+                    <span class="info-label">Coordenadas:</span>
+                    <span class="info-value" id="coordenadas">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Precisão:</span>
+                    <span class="info-value" id="precisao">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Local:</span>
+                    <span class="info-value" id="localPermitido">-</span>
+                </div>
+                <div class="info-item">
+                    <span class="info-label">Status:</span>
+                    <span class="info-value status" id="statusValidacao">-</span>
+                </div>
+            </div>
+        </section>
+
         <section class="registros-do-dia">
             <h3>Registros de Hoje</h3>
             <div class="quadro-registros">

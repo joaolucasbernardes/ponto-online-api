@@ -114,7 +114,9 @@ class DashboardServico(
                 role = funcionario.role.name,
                 ativo = funcionario.ativo,
                 ultimoRegistro = ultimoRegistro?.dataHora?.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")),
-                statusHoje = statusHoje
+                statusHoje = statusHoje,
+                escalaId = funcionario.escala?.id,
+                escalaNome = funcionario.escala?.nome
             )
         }
     }

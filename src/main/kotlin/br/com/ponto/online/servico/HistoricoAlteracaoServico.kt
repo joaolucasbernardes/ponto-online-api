@@ -2,6 +2,7 @@ package br.com.ponto.online.servico
 
 import br.com.ponto.online.entidade.Funcionario
 import br.com.ponto.online.entidade.HistoricoAlteracao
+import br.com.ponto.online.entidade.Justificativa
 import br.com.ponto.online.entidade.RegistroPonto
 import br.com.ponto.online.enums.TipoAlteracao
 import br.com.ponto.online.repositorio.HistoricoAlteracaoRepositorio
@@ -16,10 +17,12 @@ class HistoricoAlteracaoServico(
         descricao: String,
         usuario: Funcionario,
         registroPonto: RegistroPonto? = null,
+        justificativa: Justificativa? = null,
         ipOrigem: String? = null
     ): HistoricoAlteracao {
         val historico = HistoricoAlteracao(
             registroPonto = registroPonto,
+            justificativa = justificativa,
             tipoAlteracao = TipoAlteracao.CRIACAO,
             descricao = descricao,
             usuario = usuario,
@@ -34,10 +37,12 @@ class HistoricoAlteracaoServico(
         valorNovo: String,
         usuario: Funcionario,
         registroPonto: RegistroPonto? = null,
+        justificativa: Justificativa? = null,
         ipOrigem: String? = null
     ): HistoricoAlteracao {
         val historico = HistoricoAlteracao(
             registroPonto = registroPonto,
+            justificativa = justificativa,
             tipoAlteracao = TipoAlteracao.EDICAO,
             descricao = descricao,
             valorAnterior = valorAnterior,
@@ -53,10 +58,12 @@ class HistoricoAlteracaoServico(
         valorAnterior: String,
         usuario: Funcionario,
         registroPonto: RegistroPonto? = null,
+        justificativa: Justificativa? = null,
         ipOrigem: String? = null
     ): HistoricoAlteracao {
         val historico = HistoricoAlteracao(
             registroPonto = registroPonto,
+            justificativa = justificativa,
             tipoAlteracao = TipoAlteracao.EXCLUSAO,
             descricao = descricao,
             valorAnterior = valorAnterior,
@@ -92,10 +99,12 @@ class HistoricoAlteracaoServico(
         valorNovo: String? = null,
         usuario: Funcionario,
         registroPonto: RegistroPonto? = null,
+        justificativa: Justificativa? = null,
         ipOrigem: String? = null
     ): HistoricoAlteracao {
         val historico = HistoricoAlteracao(
             registroPonto = registroPonto,
+            justificativa = justificativa,
             tipoAlteracao = TipoAlteracao.EDICAO,
             descricao = descricao,
             valorAnterior = valorAnterior,
@@ -112,5 +121,9 @@ class HistoricoAlteracaoServico(
     
     fun buscarPorUsuario(usuarioId: Long): List<HistoricoAlteracao> {
         return historicoAlteracaoRepositorio.findByUsuarioIdOrderByDataHoraDesc(usuarioId)
+    }
+
+    fun buscarPorJustificativa(justificativaId: Long): List<HistoricoAlteracao> {
+        return historicoAlteracaoRepositorio.findByJustificativaIdOrderByDataHoraDesc(justificativaId)
     }
 }

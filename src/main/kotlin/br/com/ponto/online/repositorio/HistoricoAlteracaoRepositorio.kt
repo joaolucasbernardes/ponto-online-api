@@ -10,4 +10,6 @@ interface HistoricoAlteracaoRepositorio : JpaRepository<HistoricoAlteracao, Long
     fun findByRegistroPontoIdOrderByDataHoraDesc(registroPontoId: Long): List<HistoricoAlteracao>
     
     fun findByUsuarioIdOrderByDataHoraDesc(usuarioId: Long): List<HistoricoAlteracao>
+
+    fun findByJustificativaIdOrderByDataHoraDesc(justificativaId: Long): List<HistoricoAlteracao>
 }

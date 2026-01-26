@@ -82,39 +82,9 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    btnBaterPonto.addEventListener('click', async () => {
-        const token = localStorage.getItem('jwt_token');
-        const funcionarioId = localStorage.getItem('funcionario_id');
-
-        if (!token || !funcionarioId) {
-            toast.error('Sessão expirada. Faça login.');
-            window.location.href = '/login.html';
-            return;
-        }
-
-        try {
-            const response = await fetch('/registros-ponto', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ funcionarioId })
-            });
-
-            if (!response.ok) {
-                const errorData = await response.json();
-                throw new Error(errorData.mensagem || 'Erro ao registrar o ponto.');
-            }
-
-            toast.success('Ponto registrado com sucesso!');
-            await carregarRegistrosDoDia();
-
-        } catch (error) {
-            console.error('Erro no registro de ponto:', error);
-            toast.error(error.message);
-        }
-    });
+    // REMOVIDO: Event listener duplicado que causava registro em duplicidade
+    // O event listener correto está abaixo (após a seção de geolocalização)
+    // com validação de localização obrigatória
 
     async function carregarResumoHoras() {
         const token = localStorage.getItem('jwt_token');
@@ -184,17 +154,31 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        exibirStatusGeo('info', 'Obtendo localização...');
+        exibirStatusGeo('info', 'Obtendo localização... Aguarde até 60 segundos.');
         btnObterLocalizacao.disabled = true;
 
         try {
-            const position = await new Promise((resolve, reject) => {
-                navigator.geolocation.getCurrentPosition(resolve, reject, {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 0
+            // Tenta primeiro com baixa precisão (mais rápido, usa WiFi/IP)
+            let position;
+            try {
+                position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: false, // Baixa precisão é mais rápida
+                        timeout: 15000,
+                        maximumAge: 60000 // Aceita cache de até 1 minuto
+                    });
                 });
-            });
+            } catch (lowAccuracyError) {
+                // Se falhar, tenta com alta precisão (GPS)
+                exibirStatusGeo('info', 'Tentando GPS de alta precisão...');
+                position = await new Promise((resolve, reject) => {
+                    navigator.geolocation.getCurrentPosition(resolve, reject, {
+                        enableHighAccuracy: true,
+                        timeout: 60000, // 60 segundos para GPS
+                        maximumAge: 0
+                    });
+                });
+            }
 
             coordenadasAtuais = {
                 latitude: position.coords.latitude,
@@ -208,11 +192,11 @@ document.addEventListener('DOMContentLoaded', () => {
         } catch (error) {
             let mensagem = 'Erro ao obter localização';
             if (error.code === 1) {
-                mensagem = 'Permissão de localização negada';
+                mensagem = 'Permissão de localização negada. Verifique as configurações do navegador.';
             } else if (error.code === 2) {
-                mensagem = 'Localização indisponível';
+                mensagem = 'Localização indisponível. Verifique se o serviço de localização do Windows está ativado.';
             } else if (error.code === 3) {
-                mensagem = 'Tempo esgotado ao obter localização';
+                mensagem = 'Tempo esgotado. Verifique: 1) Configurações de Localização do Windows, 2) Permissões do navegador, 3) Conexão com internet.';
             }
             exibirStatusGeo('error', mensagem);
             console.error('Erro de geolocalização:', error);
@@ -255,6 +239,9 @@ document.addEventListener('DOMContentLoaded', () => {
             exibirStatusGeo('warning', resultado.mensagem);
         }
 
+        // Armazenar informação se está fora do raio
+        coordenadasAtuais.foraDoRaio = !resultado.valido;
+
         // Exibir informações
         document.querySelector('#coordenadas').textContent =
             `${coords.latitude.toFixed(6)}, ${coords.longitude.toFixed(6)}`;
@@ -296,14 +283,32 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        // Preparar dados do registro
-        const dadosRegistro = { funcionarioId };
+        // VALIDAÇÃO OBRIGATÓRIA: Verificar se a localização foi obtida
+        if (!coordenadasAtuais) {
+            toast.error('É necessário obter sua localização antes de registrar o ponto. Clique em "Obter Localização".');
+            return;
+        }
 
-        // Incluir coordenadas se disponíveis
-        if (coordenadasAtuais) {
-            dadosRegistro.latitude = coordenadasAtuais.latitude;
-            dadosRegistro.longitude = coordenadasAtuais.longitude;
-            dadosRegistro.precisaoMetros = coordenadasAtuais.precisaoMetros;
+        // Preparar dados do registro
+        const dadosRegistro = {
+            funcionarioId,
+            latitude: coordenadasAtuais.latitude,
+            longitude: coordenadasAtuais.longitude,
+            precisaoMetros: coordenadasAtuais.precisaoMetros
+        };
+
+        // Verificar se está fora do raio e pedir confirmação
+        if (coordenadasAtuais.foraDoRaio) {
+            const confirmar = confirm(
+                'ATENÇÃO: Você está fora do perímetro permitido.\n\n' +
+                'Deseja continuar com o registro?\n\n' +
+                'O administrador será notificado sobre este registro fora do perímetro.'
+            );
+
+            if (!confirmar) {
+                toast.info('Registro cancelado.');
+                return;
+            }
         }
 
         try {
@@ -321,7 +326,11 @@ document.addEventListener('DOMContentLoaded', () => {
                 throw new Error(errorData.mensagem || 'Erro ao registrar o ponto.');
             }
 
-            toast.success('Ponto registrado com sucesso!');
+            const mensagem = coordenadasAtuais.foraDoRaio
+                ? 'Ponto registrado! (Fora do perímetro - Admin notificado)'
+                : 'Ponto registrado com sucesso!';
+
+            toast.success(mensagem);
             await carregarRegistrosDoDia();
 
             // Limpar coordenadas após registro

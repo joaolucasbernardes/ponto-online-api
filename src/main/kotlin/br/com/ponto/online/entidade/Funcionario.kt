@@ -30,6 +30,10 @@ class Funcionario(
     @ManyToOne
     @JoinColumn(name = "empresa_id", nullable = false)
     val empresa: Empresa,
+    
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "escala_id")
+    val escala: Escala? = null, // Escala de trabalho do funcionário
 
     @Column(nullable = false)
     var ativo: Boolean = true

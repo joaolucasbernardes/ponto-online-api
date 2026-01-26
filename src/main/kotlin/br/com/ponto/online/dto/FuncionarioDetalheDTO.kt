@@ -8,5 +8,7 @@ data class FuncionarioDetalheDTO(
     val role: String,
     val empresaNome: String,
     val empresaId: Long,
-    val ativo: Boolean
+    val ativo: Boolean,
+    val escalaId: Long?,
+    val escalaNome: String?
 )

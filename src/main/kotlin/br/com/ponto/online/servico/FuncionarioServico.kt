@@ -7,6 +7,7 @@ import br.com.ponto.online.dto.FuncionarioListagemDTO
 import br.com.ponto.online.entidade.Funcionario
 import br.com.ponto.online.enums.Role
 import br.com.ponto.online.repositorio.EmpresaRepositorio
+import br.com.ponto.online.repositorio.EscalaRepositorio
 import br.com.ponto.online.repositorio.FuncionarioRepositorio
 import org.springframework.security.crypto.password.PasswordEncoder
 import org.springframework.stereotype.Service
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service
 class FuncionarioServico(
     private val funcionarioRepositorio: FuncionarioRepositorio,
     private val empresaRepositorio: EmpresaRepositorio,
+    private val escalaRepositorio: EscalaRepositorio,
     private val passwordEncoder: PasswordEncoder
 ) {
 
@@ -49,14 +51,22 @@ class FuncionarioServico(
             throw RuntimeException("Role inválida: ${dto.role}. Use ADMIN ou FUNCIONARIO")
         }
 
+        // Busca escala se fornecida
+        val escala = dto.escalaId?.let { escalaId ->
+            escalaRepositorio.findById(escalaId)
+                .orElseThrow { RuntimeException("Escala não encontrada com ID: $escalaId") }
+        }
+
         // Cria funcionário
         val funcionario = Funcionario(
+            id = null,
             nome = dto.nome,
             cpf = dto.cpf,
             email = dto.email,
             senha = passwordEncoder.encode(dto.senha),
             role = role,
             empresa = empresa,
+            escala = escala,
             ativo = true
         )
 
@@ -84,15 +94,22 @@ class FuncionarioServico(
             throw RuntimeException("Role inválida: ${dto.role}. Use ADMIN ou FUNCIONARIO")
         }
 
-        // Atualiza campos (usando reflection para campos val)
+        // Busca escala se fornecida
+        val escala = dto.escalaId?.let { escalaId ->
+            escalaRepositorio.findById(escalaId)
+                .orElseThrow { RuntimeException("Escala não encontrada com ID: $escalaId") }
+        }
+
+        // Atualiza campos
         val funcionarioAtualizado = Funcionario(
             id = funcionario.id,
             nome = dto.nome,
-            cpf = funcionario.cpf, // CPF não é editável
+            cpf = funcionario.cpf,
             email = dto.email,
             senha = if (dto.senha.isNullOrBlank()) funcionario.senha else passwordEncoder.encode(dto.senha),
             role = role,
             empresa = empresa,
+            escala = escala,
             ativo = funcionario.ativo
         )
 
@@ -162,7 +179,9 @@ class FuncionarioServico(
             role = funcionario.role.name,
             ativo = funcionario.ativo,
             ultimoRegistro = null, // Será preenchido se necessário
-            statusHoje = if (funcionario.ativo) "Ativo" else "Inativo"
+            statusHoje = if (funcionario.ativo) "Ativo" else "Inativo",
+            escalaId = funcionario.escala?.id,
+            escalaNome = funcionario.escala?.nome
         )
     }
 
@@ -175,7 +194,9 @@ class FuncionarioServico(
             role = funcionario.role.name,
             empresaNome = funcionario.empresa.razaoSocial,
             empresaId = funcionario.empresa.id!!,
-            ativo = funcionario.ativo
+            ativo = funcionario.ativo,
+            escalaId = funcionario.escala?.id,
+            escalaNome = funcionario.escala?.nome
         )
     }
 }

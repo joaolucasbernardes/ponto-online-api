@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*
 @RequestMapping("/api/admin/funcionarios")
 @PreAuthorize("hasRole('ADMIN')")
 class FuncionarioControle(
-    private val funcionarioServico: FuncionarioServico
+    private val funcionarioServico: FuncionarioServico,
+    private val atribuicaoEscalaServico: br.com.ponto.online.servico.AtribuicaoEscalaServico
 ) {
 
     @GetMapping
@@ -63,5 +64,24 @@ class FuncionarioControle(
     fun ativar(@PathVariable id: Long): ResponseEntity<Void> {
         funcionarioServico.ativar(id)
         return ResponseEntity.noContent().build()
+    }
+    
+    // ===== Atribuição de Escala =====
+    
+    @PutMapping("/{id}/escala")
+    fun atribuirEscala(
+        @PathVariable id: Long,
+        @RequestBody dto: br.com.ponto.online.dto.AtribuirEscalaDTO
+    ): ResponseEntity<FuncionarioDetalheDTO> {
+        atribuicaoEscalaServico.atribuirEscala(id, dto)
+        val funcionario = funcionarioServico.buscarPorId(id)
+        return ResponseEntity.ok(funcionario)
+    }
+    
+    @GetMapping("/{id}/historico-escala")
+    fun buscarHistoricoEscala(@PathVariable id: Long): ResponseEntity<List<br.com.ponto.online.dto.HistoricoEscalaRespostaDTO>> {
+        val historico = atribuicaoEscalaServico.buscarHistorico(id)
+        val dtos = historico.map { br.com.ponto.online.dto.HistoricoEscalaRespostaDTO.deEntidade(it) }
+        return ResponseEntity.ok(dtos)
     }
 }

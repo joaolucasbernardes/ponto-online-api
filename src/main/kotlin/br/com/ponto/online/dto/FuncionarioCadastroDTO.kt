@@ -6,5 +6,6 @@ data class FuncionarioCadastroDTO(
     val email: String,
     val senha: String,
     val role: String, // "ADMIN" ou "FUNCIONARIO"
-    val empresaId: Long
+    val empresaId: Long,
+    val escalaId: Long? = null
 )

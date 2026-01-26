@@ -9,5 +9,7 @@ data class FuncionarioListagemDTO(
     val role: String,
     val ativo: Boolean,
     val ultimoRegistro: String?,
-    val statusHoje: String // COMPLETO, INCOMPLETO, SEM_REGISTRO
+    val statusHoje: String, // COMPLETO, INCOMPLETO, SEM_REGISTRO
+    val escalaId: Long?,
+    val escalaNome: String?
 )

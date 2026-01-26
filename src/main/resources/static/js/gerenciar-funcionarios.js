@@ -2,6 +2,7 @@
 
 let funcionarios = [];
 let empresas = [];
+let escalas = [];
 let modoEdicao = false;
 let funcionarioEditandoId = null;
 
@@ -9,6 +10,7 @@ let funcionarioEditandoId = null;
 document.addEventListener('DOMContentLoaded', () => {
     verificarAutenticacao();
     carregarEmpresas();
+    carregarEscalas();
     carregarFuncionarios();
 });
 
@@ -60,6 +62,39 @@ function preencherSelectEmpresas() {
     });
 }
 
+// Carregar Escalas
+async function carregarEscalas() {
+    try {
+        const token = localStorage.getItem('token');
+        const response = await fetch('/api/escalas/ativas', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        });
+
+        if (!response.ok) throw new Error('Erro ao carregar escalas');
+
+        escalas = await response.json();
+        preencherSelectEscalas();
+    } catch (error) {
+        console.error('Erro ao carregar escalas:', error);
+    }
+}
+
+function preencherSelectEscalas() {
+    const select = document.getElementById('inputEscala');
+    if (!select) return;
+
+    select.innerHTML = '<option value="">Nenhuma (usar padrão)</option>';
+
+    escalas.forEach(escala => {
+        const option = document.createElement('option');
+        option.value = escala.id;
+        option.textContent = `${escala.nome} (${escala.horaEntrada}-${escala.horaSaida})`;
+        select.appendChild(option);
+    });
+}
+
 // Carregar Funcionários
 async function carregarFuncionarios() {
     try {
@@ -86,7 +121,7 @@ function renderizarTabela(lista) {
     const tbody = document.getElementById('funcionariosTableBody');
 
     if (lista.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="loading">Nenhum funcionário encontrado</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="8" class="loading">Nenhum funcionário encontrado</td></tr>';
         return;
     }
 
@@ -96,6 +131,7 @@ function renderizarTabela(lista) {
             <td>${func.email}</td>
             <td>${formatarCPF(func.cpf || 'N/A')}</td>
             <td>${func.empresa || func.empresaNome || 'N/A'}</td>
+            <td>${func.escalaNome || '<span style="color: var(--text-muted);">Padrão</span>'}</td>
             <td><span class="badge ${func.role?.toLowerCase() || 'funcionario'}">${func.role || 'FUNCIONARIO'}</span></td>
             <td><span class="badge ${func.ativo ? 'ativo' : 'inativo'}">${func.ativo ? 'Ativo' : 'Inativo'}</span></td>
             <td>
@@ -187,6 +223,7 @@ async function abrirModalEditar(id) {
         document.getElementById('senhaHint').textContent = 'Deixe em branco para manter a senha atual';
         document.getElementById('inputRole').value = funcionario.role;
         document.getElementById('inputEmpresa').value = funcionario.empresaId;
+        document.getElementById('inputEscala').value = funcionario.escalaId || '';
 
         document.getElementById('modalFuncionario').classList.add('active');
     } catch (error) {
@@ -281,9 +318,11 @@ async function salvarFuncionario(event) {
 
         const method = modoEdicao ? 'PUT' : 'POST';
 
+        const escalaId = document.getElementById('inputEscala').value;
+
         const dados = modoEdicao
-            ? { nome, email, senha: senha || null, role, empresaId }
-            : { nome, cpf, email, senha, role, empresaId };
+            ? { nome, email, senha: senha || null, role, empresaId, escalaId: escalaId ? parseInt(escalaId) : null }
+            : { nome, cpf, email, senha, role, empresaId, escalaId: escalaId ? parseInt(escalaId) : null };
 
         const response = await fetch(url, {
             method: method,

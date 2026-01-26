@@ -6,21 +6,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gerenciar Funcionários - Ponto Online</title>
     <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/gerenciar-funcionarios.css">
 </head>
 
 <body>
-    <nav class="navbar"
-        style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 1rem 0; position: sticky; top: 0; z-index: 100;">
-        <div class="navbar-content"
-            style="max-width: 1400px; margin: 0 auto; padding: 0 2rem; display: flex; flex-direction: row; justify-content: space-between; align-items: center;">
-            <h1 class="logo" style="font-size: 1.5rem; font-weight: 700; color: white; margin: 0;">📊 Ponto Online</h1>
-            <div class="navbar-menu" style="display: flex; flex-direction: row; gap: 1.5rem; align-items: center;">
+    <!-- Navbar Padronizada -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1 class="logo">📊 Ponto Online</h1>
+            <div class="navbar-menu">
                 <a href="/admin.html" class="nav-link">Dashboard</a>
                 <a href="/gerenciar-funcionarios.html" class="nav-link active">Gerenciar Funcionários</a>
                 <a href="/registrar-ponto-manual.html" class="nav-link">Registrar Ponto Manual</a>
+                <a href="/aprovar-justificativas.html" class="nav-link">Aprovar Justificativas</a>
+                <a href="/configuracoes-empresa.html" class="nav-link">Configurações</a>
+                <a href="/gerenciar-locais.html" class="nav-link">Locais Permitidos</a>
+                <a href="/gerenciar-escalas.html" class="nav-link">Escalas e Turnos</a>
             </div>
-            <div class="navbar-user" style="display: flex; flex-direction: row; align-items: center; gap: 1rem;">
+            <div class="navbar-user">
                 <span class="user-badge">Administrador</span>
                 <button onclick="logout()" class="btn-logout">Sair</button>
             </div>
@@ -63,6 +67,7 @@
                         <th>Email</th>
                         <th>CPF</th>
                         <th>Empresa</th>
+                        <th>Escala</th>
                         <th>Role</th>
                         <th>Status</th>
                         <th style="min-width: 200px; white-space: nowrap;">Ações</th>
@@ -70,7 +75,7 @@
                 </thead>
                 <tbody id="funcionariosTableBody">
                     <tr>
-                        <td colspan="7" class="loading">Carregando...</td>
+                        <td colspan="8" class="loading">Carregando...</td>
                     </tr>
                 </tbody>
             </table>
@@ -120,11 +125,21 @@
                     </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="inputEmpresa">Empresa *</label>
-                    <select id="inputEmpresa" required>
-                        <option value="">Carregando...</option>
-                    </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="inputEmpresa">Empresa *</label>
+                        <select id="inputEmpresa" required>
+                            <option value="">Carregando...</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputEscala">Escala de Trabalho</label>
+                        <select id="inputEscala">
+                            <option value="">Carregando...</option>
+                        </select>
+                        <small>Deixe em branco para usar a escala padrão</small>
+                    </div>
                 </div>
 
                 <div class="modal-footer">

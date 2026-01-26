@@ -1,26 +1,35 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aprovar Justificativas - Ponto Online</title>
+    <link rel="stylesheet" href="/css/admin.css">
     <link rel="stylesheet" href="/css/aprovar-justificativas.css">
     <link rel="stylesheet" href="/css/toast.css">
 </head>
+
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="header-content">
-            <div class="header-left">
-                <h1>📋 Aprovar Justificativas</h1>
-                <p class="subtitle">Gerencie solicitações de justificativas dos funcionários</p>
+    <!-- Navbar Padronizada -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1 class="logo">📊 Ponto Online</h1>
+            <div class="navbar-menu">
+                <a href="/admin.html" class="nav-link">Dashboard</a>
+                <a href="/gerenciar-funcionarios.html" class="nav-link">Gerenciar Funcionários</a>
+                <a href="/registrar-ponto-manual.html" class="nav-link">Registrar Ponto Manual</a>
+                <a href="/aprovar-justificativas.html" class="nav-link active">Aprovar Justificativas</a>
+                <a href="/configuracoes-empresa.html" class="nav-link">Configurações</a>
+                <a href="/gerenciar-locais.html" class="nav-link">Locais Permitidos</a>
+                <a href="/gerenciar-escalas.html" class="nav-link">Escalas e Turnos</a>
             </div>
-            <div class="header-right">
-                <button class="btn-secondary" onclick="window.location.href='/admin.html'">← Voltar ao Dashboard</button>
-                <button class="btn-danger" onclick="logout()">Sair</button>
+            <div class="navbar-user">
+                <span class="user-badge">Administrador</span>
+                <button onclick="logout()" class="btn-logout">Sair</button>
             </div>
         </div>
-    </header>
+    </nav>
 
     <!-- Statistics Cards -->
     <section class="statistics">
@@ -98,7 +107,8 @@
             </div>
             <div class="modal-body">
                 <p>Informe o motivo da rejeição:</p>
-                <textarea id="motivoRejeicao" rows="4" placeholder="Digite o motivo da rejeição..." maxlength="500"></textarea>
+                <textarea id="motivoRejeicao" rows="4" placeholder="Digite o motivo da rejeição..."
+                    maxlength="500"></textarea>
                 <div class="char-counter">
                     <span id="charCount">0</span>/500 caracteres
                 </div>
@@ -132,4 +142,5 @@
     <script src="/js/toast.js"></script>
     <script src="/js/aprovar-justificativas.js"></script>
 </body>
+
 </html>

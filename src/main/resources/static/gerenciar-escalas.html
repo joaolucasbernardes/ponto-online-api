@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gerenciar Escalas - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/admin.css">
+    <link rel="stylesheet" href="/css/toast.css">
+
+    <style>
+        .escalas-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .escalas-lista {
+            background: rgba(26, 33, 66, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+        }
+
+        .escala-card {
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: var(--space-lg);
+            margin-bottom: var(--space-md);
+            transition: all 0.2s ease;
+        }
+
+        .escala-card:hover {
+            transform: translateY(-2px);
+            border-color: var(--accent-primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .escala-card h4 {
+            margin: 0 0 var(--space-sm) 0;
+            color: var(--text-primary);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .escala-info {
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin: var(--space-xs) 0;
+        }
+
+        .escala-actions {
+            display: flex;
+            gap: var(--space-sm);
+            margin-top: var(--space-md);
+            flex-wrap: wrap;
+        }
+
+        .btn-small {
+            padding: var(--space-sm) var(--space-md);
+            font-size: 0.875rem;
+            border-radius: var(--radius-sm);
+        }
+
+        .escala-form {
+            background: rgba(26, 33, 66, 0.6);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: var(--space-xl);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: var(--space-md);
+            margin-bottom: var(--space-md);
+        }
+
+        .form-group {
+            margin-bottom: var(--space-md);
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: var(--space-sm);
+            font-weight: 500;
+            color: var(--text-secondary);
+            font-size: 0.875rem;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: var(--space-md);
+            background: var(--bg-input);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            color: var(--text-primary);
+            font-family: inherit;
+            font-size: 0.9375rem;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+
+        .dias-semana-selector {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: var(--space-sm);
+            margin-top: var(--space-sm);
+        }
+
+        .dia-checkbox {
+            display: none;
+        }
+
+        .dia-label {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--space-md);
+            background: var(--bg-input);
+            border: 2px solid var(--border-color);
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-weight: 600;
+            font-size: 0.875rem;
+        }
+
+        .dia-checkbox:checked+.dia-label {
+            background: var(--accent-primary);
+            border-color: var(--accent-primary);
+            color: white;
+        }
+
+        .dia-label:hover {
+            border-color: var(--accent-primary);
+        }
+
+        .badge-tipo {
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .badge-tipo.fixa {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--success);
+        }
+
+        .badge-tipo.flexivel {
+            background: rgba(59, 130, 246, 0.2);
+            color: #3b82f6;
+        }
+
+        .badge-tipo.rotativa {
+            background: rgba(245, 158, 11, 0.2);
+            color: var(--warning);
+        }
+
+        .badge-tipo.escala_12x36 {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+        }
+
+        .badge-padrao {
+            background: rgba(99, 102, 241, 0.2);
+            color: var(--accent-primary);
+            padding: var(--space-xs) var(--space-sm);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        @media (max-width: 1024px) {
+            .escalas-container {
+                grid-template-columns: 1fr;
+            }
+
+            .dias-semana-selector {
+                grid-template-columns: repeat(4, 1fr);
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navbar Padronizada -->
+    <nav class="navbar">
+        <div class="navbar-content">
+            <h1 class="logo">📊 Ponto Online</h1>
+            <div class="navbar-menu">
+                <a href="/admin.html" class="nav-link">Dashboard</a>
+                <a href="/gerenciar-funcionarios.html" class="nav-link">Gerenciar Funcionários</a>
+                <a href="/registrar-ponto-manual.html" class="nav-link">Registrar Ponto Manual</a>
+                <a href="/aprovar-justificativas.html" class="nav-link">Aprovar Justificativas</a>
+                <a href="/configuracoes-empresa.html" class="nav-link">Configurações</a>
+                <a href="/gerenciar-locais.html" class="nav-link">Locais Permitidos</a>
+                <a href="/gerenciar-escalas.html" class="nav-link active">Escalas e Turnos</a>
+            </div>
+            <div class="navbar-user">
+                <span class="user-badge">Administrador</span>
+                <button onclick="logout()" class="btn-logout">Sair</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="container">
+        <h2>⏰ Gerenciar Escalas de Trabalho</h2>
+        <p style="color: var(--text-secondary); margin-bottom: 2rem;">
+            Configure diferentes escalas e horários de trabalho
+        </p>
+
+        <div class="escalas-container">
+            <!-- Lista de Escalas -->
+            <div class="escalas-lista">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                    <h3>Escalas Cadastradas</h3>
+                    <button id="btnNovaEscala" class="btn-ponto btn-small">+ Nova Escala</button>
+                </div>
+                <div id="listaEscalas">
+                    <p style="text-align: center; color: var(--text-muted); padding: 2rem;">
+                        Carregando...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Formulário -->
+            <div class="escala-form">
+                <h3 id="formTitulo">Nova Escala</h3>
+                <form id="formEscala">
+                    <input type="hidden" id="escalaId">
+
+                    <div class="form-group">
+                        <label for="nome">Nome da Escala *</label>
+                        <input type="text" id="nome" required maxlength="100"
+                            placeholder="Ex: Comercial, Noturno, 12x36">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="descricao">Descrição</label>
+                        <textarea id="descricao" maxlength="500" rows="2" placeholder="Descrição opcional"></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Escala *</label>
+                        <select id="tipo" required>
+                            <option value="FIXA">Fixa - Horário fixo todos os dias</option>
+                            <option value="FLEXIVEL">Flexível - Carga horária flexível</option>
+                            <option value="ROTATIVA">Rotativa - Alterna entre turnos</option>
+                            <option value="ESCALA_12X36">12x36 - 12h trabalho, 36h descanso</option>
+                        </select>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="horaEntrada">Hora Entrada *</label>
+                            <input type="time" id="horaEntrada" required value="08:00">
+                        </div>
+                        <div class="form-group">
+                            <label for="horaSaida">Hora Saída *</label>
+                            <input type="time" id="horaSaida" required value="17:00">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="intervaloMinutos">Intervalo (minutos) *</label>
+                            <input type="number" id="intervaloMinutos" required min="0" max="240" value="60">
+                        </div>
+                        <div class="form-group">
+                            <label for="cargaHorariaDiaria">Carga Diária (horas) *</label>
+                            <input type="number" id="cargaHorariaDiaria" required min="1" max="12" step="0.5" value="8">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="cargaHorariaSemanal">Carga Semanal (horas) *</label>
+                        <input type="number" id="cargaHorariaSemanal" required min="1" max="60" step="0.5" value="40">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Dias da Semana *</label>
+                        <div class="dias-semana-selector">
+                            <input type="checkbox" id="seg" class="dia-checkbox" value="SEGUNDA" checked>
+                            <label for="seg" class="dia-label">SEG</label>
+
+                            <input type="checkbox" id="ter" class="dia-checkbox" value="TERCA" checked>
+                            <label for="ter" class="dia-label">TER</label>
+
+                            <input type="checkbox" id="qua" class="dia-checkbox" value="QUARTA" checked>
+                            <label for="qua" class="dia-label">QUA</label>
+
+                            <input type="checkbox" id="qui" class="dia-checkbox" value="QUINTA" checked>
+                            <label for="qui" class="dia-label">QUI</label>
+
+                            <input type="checkbox" id="sex" class="dia-checkbox" value="SEXTA" checked>
+                            <label for="sex" class="dia-label">SEX</label>
+
+                            <input type="checkbox" id="sab" class="dia-checkbox" value="SABADO">
+                            <label for="sab" class="dia-label">SAB</label>
+
+                            <input type="checkbox" id="dom" class="dia-checkbox" value="DOMINGO">
+                            <label for="dom" class="dia-label">DOM</label>
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="toleranciaEntrada">Tolerância Entrada (min) *</label>
+                            <input type="number" id="toleranciaEntrada" required min="0" max="60" value="10">
+                        </div>
+                        <div class="form-group">
+                            <label for="toleranciaSaida">Tolerância Saída (min) *</label>
+                            <input type="number" id="toleranciaSaida" required min="0" max="60" value="10">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="ativo" checked>
+                            Escala ativa
+                        </label>
+                    </div>
+
+                    <div class="form-group">
+                        <label>
+                            <input type="checkbox" id="escalaPadrao">
+                            Definir como escala padrão
+                        </label>
+                        <small style="color: var(--text-muted); font-size: 0.75rem;">
+                            Novos funcionários receberão esta escala automaticamente
+                        </small>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <button type="submit" class="btn-ponto" style="flex: 1;">Salvar Escala</button>
+                        <button type="button" id="btnCancelar" class="btn-secondary" style="flex: 1;">Cancelar</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <script src="/js/toast.js"></script>
+    <script src="/js/auth.js"></script>
+    <script src="/js/gerenciar-escalas.js"></script>
+</body>
+
+</html>

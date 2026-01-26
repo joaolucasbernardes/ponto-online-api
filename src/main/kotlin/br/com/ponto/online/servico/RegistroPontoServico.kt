@@ -149,4 +149,8 @@ class RegistroPontoServico(
             funcionarioId, inicioDoDia, fimDoDia
         )
     }
+
+    fun buscarUltimosRegistros(): List<RegistroPonto> {
+        return registroPontoRepositorio.findTop20ByOrderByDataHoraDesc()
+    }
 }

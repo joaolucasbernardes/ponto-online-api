@@ -19,4 +19,7 @@ interface RegistroPontoRepositorio : JpaRepository<RegistroPonto, Long> {
     fun countByDataHoraBetween(inicio: LocalDateTime, fim: LocalDateTime): Long
     
     fun findByDataHoraBetween(inicio: LocalDateTime, fim: LocalDateTime): List<RegistroPonto>
+
+    // Buscar últimos registros gerais (para histórico admin)
+    fun findTop20ByOrderByDataHoraDesc(): List<RegistroPonto>
 }

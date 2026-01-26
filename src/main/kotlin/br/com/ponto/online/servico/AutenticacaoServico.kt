@@ -27,7 +27,7 @@ class AutenticacaoServico(
             is Admin -> LoginRespostaDTO(
                 mensagem = "Login bem-sucedido!",
                 token = jwtToken,
-                funcionarioId = null,
+                funcionarioId = userDetails.id!!,
                 nome = userDetails.nome,
                 role = "ADMIN"
             )

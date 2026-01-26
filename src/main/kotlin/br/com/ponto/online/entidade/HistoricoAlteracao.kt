@@ -14,6 +14,10 @@ data class HistoricoAlteracao(
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "registro_ponto_id")
     val registroPonto: RegistroPonto? = null,
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "justificativa_id")
+    val justificativa: Justificativa? = null,
     
     @Enumerated(EnumType.STRING)
     @Column(name = "tipo_alteracao", nullable = false, length = 20)

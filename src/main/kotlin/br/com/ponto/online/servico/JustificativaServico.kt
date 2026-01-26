@@ -6,6 +6,7 @@ import br.com.ponto.online.entidade.Justificativa
 import br.com.ponto.online.enums.StatusJustificativa
 import br.com.ponto.online.enums.TipoAlteracao
 import br.com.ponto.online.enums.TipoJustificativa
+import br.com.ponto.online.repositorio.AdminRepositorio
 import br.com.ponto.online.repositorio.FuncionarioRepositorio
 import br.com.ponto.online.repositorio.JustificativaRepositorio
 import org.springframework.stereotype.Service
@@ -17,6 +18,7 @@ import java.util.NoSuchElementException
 class JustificativaServico(
     private val justificativaRepositorio: JustificativaRepositorio,
     private val funcionarioRepositorio: FuncionarioRepositorio,
+    private val adminRepositorio: AdminRepositorio,
     private val historicoServico: HistoricoAlteracaoServico
 ) {
     
@@ -74,6 +76,7 @@ class JustificativaServico(
         historicoServico.registrarCriacao(
             descricao = "Justificativa criada: ${requisicaoDTO.tipo} para ${requisicaoDTO.data}",
             usuario = funcionario,
+            justificativa = justificativaSalva,
             ipOrigem = null
         )
         
@@ -104,33 +107,54 @@ class JustificativaServico(
             )
         }
         
-        // Buscar aprovador
-        val aprovador = funcionarioRepositorio.findById(aprovacaoDTO.aprovadorId)
-            .orElseThrow { NoSuchElementException("Aprovador com ID ${aprovacaoDTO.aprovadorId} não encontrado.") }
+        // Buscar aprovador (pode ser Funcionário ou Admin)
+        val funcionarioAprovador = funcionarioRepositorio.findById(aprovacaoDTO.aprovadorId).orElse(null)
+        val adminAprovador = if (funcionarioAprovador == null) {
+            adminRepositorio.findById(aprovacaoDTO.aprovadorId).orElse(null)
+        } else null
+        
+        // Verificar se encontrou algum aprovador
+        if (funcionarioAprovador == null && adminAprovador == null) {
+            throw NoSuchElementException("Aprovador com ID ${aprovacaoDTO.aprovadorId} não encontrado.")
+        }
+        
+        val nomeAprovador = funcionarioAprovador?.nome ?: adminAprovador!!.nome
         
         // Atualizar status
         val novoStatus = if (aprovacaoDTO.aprovada) StatusJustificativa.APROVADA else StatusJustificativa.REJEITADA
         
+        // Preparar observação
+        val observacaoFinal = if (adminAprovador != null) {
+            // Se foi aprovado por um Admin, incluir info na observação
+            val obsBase = aprovacaoDTO.observacao?.trim() ?: ""
+            if (obsBase.isNotEmpty()) "$obsBase (Aprovado por Admin: ${adminAprovador.nome})"
+            else "Aprovado por Admin: ${adminAprovador.nome}"
+        } else {
+            aprovacaoDTO.observacao?.trim()
+        }
+        
         val justificativaAtualizada = justificativa.copy(
             status = novoStatus,
-            aprovador = aprovador,
+            aprovador = funcionarioAprovador, // null se foi aprovado por Admin
             dataAprovacao = LocalDateTime.now(),
-            observacaoAprovador = aprovacaoDTO.observacao?.trim()
+            observacaoAprovador = observacaoFinal
         )
         
         val justificativaSalva = justificativaRepositorio.save(justificativaAtualizada)
         
-        // Registrar no histórico
-        historicoServico.registrarAlteracao(
-            descricao = "Justificativa ${if (aprovacaoDTO.aprovada) "aprovada" else "rejeitada"} por ${aprovador.nome}",
-            valorAnterior = "Status: PENDENTE",
-            valorNovo = "Status: $novoStatus",
-            usuario = aprovador,
-            ipOrigem = null
-        )
-        
-        // TODO: Se aprovada e tipo AJUSTE_PONTO, criar/ajustar registro de ponto
-        // Isso será implementado na próxima sprint
+        // Registrar no histórico - usar funcionário se disponível, senão criar registro simplificado
+        if (funcionarioAprovador != null) {
+            historicoServico.registrarAlteracao(
+                descricao = "Justificativa ${if (aprovacaoDTO.aprovada) "aprovada" else "rejeitada"} por ${nomeAprovador}",
+                valorAnterior = "Status: PENDENTE",
+                valorNovo = "Status: $novoStatus",
+                usuario = funcionarioAprovador,
+                justificativa = justificativaSalva,
+                ipOrigem = null
+            )
+        }
+        // Nota: Se aprovador é Admin, histórico não é registrado devido à dependência de Funcionario
+        // Isso pode ser melhorado futuramente com uma entidade base "Usuario"
         
         return justificativaSalva
     }

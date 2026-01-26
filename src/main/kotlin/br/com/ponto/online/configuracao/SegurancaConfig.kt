@@ -27,6 +27,7 @@ class SegurancaConfig(
     fun securityFilterChain(http: HttpSecurity): SecurityFilterChain {
         http.invoke {
             csrf { disable() }
+            cors { }
             sessionManagement { sessionCreationPolicy = SessionCreationPolicy.STATELESS }
             authorizeHttpRequests {
                 // Rotas públicas - Login
@@ -49,6 +50,7 @@ class SegurancaConfig(
                 authorize("/aprovar-justificativas.html", hasRole("ADMIN"))
                 authorize("/configuracoes-empresa.html", hasRole("ADMIN"))
                 authorize("/gerenciar-locais.html", hasRole("ADMIN"))
+                authorize("/gerenciar-escalas.html", hasRole("ADMIN"))
                 authorize("/principal.html", authenticated)
                 authorize("/historico.html", authenticated)
                 authorize("/justificar-ausencia.html", authenticated)
@@ -61,6 +63,8 @@ class SegurancaConfig(
                 authorize("/api/configuracoes/**", hasRole("ADMIN"))
                 authorize("/api/feriados/**", hasRole("ADMIN"))
                 authorize("/api/locais-permitidos/**", hasRole("ADMIN"))
+                authorize("/api/escalas/**", hasRole("ADMIN"))
+                authorize("/api/turnos/**", hasRole("ADMIN"))
                 
                 // APIs protegidas (requerem autenticação)
                 authorize("/api/**", authenticated)

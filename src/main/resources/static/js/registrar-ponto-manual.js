@@ -140,35 +140,40 @@ function limparFormulario() {
 /**
  * Load recent manual entries history
  */
+/**
+ * Load recent manual entries history
+ */
 async function carregarHistorico() {
     const token = localStorage.getItem('token');
     const historicoDiv = document.getElementById('historicoRegistros');
 
     try {
-        // Get all employees to build a map of ID -> name
-        const funcionariosResponse = await fetch('/api/admin/dashboard/funcionarios-ativos', {
+        const response = await fetch('/registros-ponto/ultimos', {
             headers: { 'Authorization': `Bearer ${token}` }
         });
-        const funcionarios = await funcionariosResponse.json();
-        const funcionariosMap = {};
-        funcionarios.forEach(f => {
-            funcionariosMap[f.id] = f.nome;
-        });
 
-        // Get recent records (last 10)
-        // Note: This endpoint doesn't exist yet, so we'll show a placeholder
-        // In a real implementation, you'd create a backend endpoint for this
+        if (!response.ok) throw new Error('Erro ao carregar histórico');
 
-        historicoDiv.innerHTML = `
+        const registros = await response.json();
+
+        if (registros.length === 0) {
+            historicoDiv.innerHTML = '<div class="empty-state" style="text-align: center; color: rgba(255,255,255,0.7); padding: 2rem;">Nenhum registro encontrado.</div>';
+            return;
+        }
+
+        historicoDiv.innerHTML = registros.map(reg => `
             <div class="history-item">
                 <div class="history-item-header">
-                    <span class="history-item-name">Histórico não disponível</span>
+                    <span class="history-item-name">${reg.nomeFuncionario}</span>
+                    <span class="history-item-badge ${reg.tipo === 'ENTRADA' ? 'badge-entrada' : 'badge-saida'}">${reg.tipo}</span>
                 </div>
                 <div class="history-item-details">
-                    Para visualizar o histórico completo, acesse o painel de cada funcionário.
+                    <span>📅 ${reg.dataHora}</span>
+                    ${reg.nomeLocalPermitido ? ` • 📍 ${reg.nomeLocalPermitido}` : ''}
+                    ${reg.dentroDoRaio === false ? ' • ⚠️ Fora do raio' : ''}
                 </div>
             </div>
-        `;
+        `).join('');
 
     } catch (error) {
         console.error('Erro ao carregar histórico:', error);

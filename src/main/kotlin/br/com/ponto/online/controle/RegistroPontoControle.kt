@@ -64,4 +64,11 @@ class RegistroPontoControle(
         val resumo = calculoHorasServico.calcularResumoMensal(funcionarioId, mesCalculo, anoCalculo)
         return ResponseEntity.ok(resumo)
     }
+
+    @GetMapping("/ultimos")
+    fun buscarUltimosRegistros(): ResponseEntity<List<RegistroPontoRespostaDTO>> {
+        val registros = registroPontoServico.buscarUltimosRegistros()
+        val respostaDTOs = registros.map { RegistroPontoRespostaDTO.deEntidade(it) }
+        return ResponseEntity.ok(respostaDTOs)
+    }
 }

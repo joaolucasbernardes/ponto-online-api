@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Cartão Ponto</title>
+    <style>
+        @page {
+            size: A4;
+            margin: 1cm;
+        }
+
+        body {
+            font-family: 'Helvetica', sans-serif;
+            font-size: 9pt;
+        }
+
+        .container {
+            width: 100%;
+        }
+
+        /* Header Box */
+        .header-box {
+            border: 1px solid black;
+            margin-bottom: 5px;
+            padding: 5px;
+        }
+
+        .header-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 2px;
+        }
+
+        .header-label {
+            font-weight: bold;
+            margin-right: 5px;
+        }
+
+        /* Table */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 5px;
+        }
+
+        th,
+        td {
+            border: 1px solid black;
+            padding: 2px 4px;
+            text-align: left;
+            vertical-align: middle;
+        }
+
+        th {
+            background-color: #f0f0f0;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Columns */
+        .col-data {
+            width: 40px;
+            text-align: center;
+        }
+
+        .col-sem {
+            width: 30px;
+            text-align: center;
+        }
+
+        .col-hor {
+            width: 140px;
+            text-align: center;
+            font-family: 'Courier New', monospace;
+            font-size: 8pt;
+        }
+
+        .col-marc {}
+
+        /* Footer/Signatures */
+        .footer-note {
+            font-size: 8pt;
+            margin-top: 5px;
+            margin-bottom: 30px;
+        }
+
+        .signatures-table {
+            width: 100%;
+            border: none;
+            margin-top: 30px;
+        }
+
+        .signatures-table td {
+            border: none;
+            text-align: center;
+            vertical-align: top;
+            width: 50%;
+        }
+
+        .sig-line {
+            border-top: 1px solid black;
+            width: 80%;
+            margin: 0 auto;
+            margin-top: 40px;
+            padding-top: 5px;
+        }
+
+        .pis {
+            float: right;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header Section -->
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 5px;">
+            <h2 style="margin: 0;">Cartão Ponto</h2>
+            <span>Período: <span th:text="${#temporals.format(cartao.periodoInicio, 'dd/MM/yyyy')}">01/01/2026</span> a
+                <span th:text="${#temporals.format(cartao.periodoFim, 'dd/MM/yyyy')}">31/01/2026</span></span>
+            <span>Pág.: 1</span>
+        </div>
+
+        <div class="header-box">
+            <div>
+                <span class="header-label">Empregador:</span> <span th:text="${cartao.empresaNome}">PLANSUL</span>
+                <span style="float: right;"><span class="header-label">CNPJ:</span> <span
+                        th:text="${cartao.empresaCnpj}">00.000.000/0001-00</span></span>
+            </div>
+            <div>
+                <span class="header-label">Endereço:</span> <span th:text="${cartao.empresaEndereco}">RUA TESTE</span>
+            </div>
+        </div>
+
+        <div class="header-box">
+            <div>
+                <span class="header-label">Empregado:</span> <span th:text="${cartao.funcionarioNome}">JOAO SILVA</span>
+                <span style="float: right;">
+                    <span class="header-label">CTPS:</span> 00000
+                    <span class="header-label">Série:</span> 000
+                </span>
+            </div>
+            <div>
+                <span class="header-label">Cargo:</span> <span th:text="${cartao.funcionarioCargo}">ANALISTA</span>
+                <span style="margin-left: 20px;"><span class="header-label">Regime:</span> Presencial</span>
+                <span style="float:right;"><span class="header-label">PIS:</span> <span
+                        th:text="${cartao.funcionarioCpf}">000.000.000-00</span></span>
+            </div>
+        </div>
+
+        <!-- Table Data -->
+        <table>
+            <thead>
+                <tr>
+                    <th class="col-data">Data</th>
+                    <th class="col-sem">Sem</th>
+                    <th class="col-hor">Hor</th>
+                    <th class="col-marc">Marcações</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${cartao.itens}">
+                    <td class="col-data" th:text="${#temporals.format(item.data, 'dd/MM')}">01/01</td>
+                    <td class="col-sem" th:text="${item.diaSemana}">SEG</td>
+                    <td class="col-hor" th:text="${item.horariosEsperados}">08:00 12:00</td>
+                    <td class="col-marc" th:text="${item.marcacoes}">08:00 12:00 13:00 18:00</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="footer-note">
+            Estou de pleno acordo com o que demonstram as marcações acima, sendo que representam o ocorrido neste
+            período.<br />
+            (M) = marcação incluída de forma manual
+        </div>
+
+        <!-- Signatures using a table for alignment -->
+        <table class="signatures-table">
+            <tr>
+                <td>
+                    <div class="sig-line">Assinatura do Empregado</div>
+                </td>
+                <td>
+                    <div class="sig-line">Assinatura da Chefia</div>
+                </td>
+            </tr>
+        </table>
+    </div>
+</body>
+
+</html>

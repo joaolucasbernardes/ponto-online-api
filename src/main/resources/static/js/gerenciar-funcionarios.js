@@ -137,6 +137,7 @@ function renderizarTabela(lista) {
             <td>
                 <button onclick="abrirModalDetalhes(${func.id})" class="btn-action">Ver</button>
                 <button onclick="abrirModalEditar(${func.id})" class="btn-action edit">Editar</button>
+                <button onclick="window.open('/api/relatorios/cartao-ponto/${func.id}', '_blank')" class="btn-action" style="background-color: #e53e3e; color: white;" title="Baixar Cartão Ponto">📄 PDF</button>
                 ${func.ativo
             ? `<button onclick="desativarFuncionario(${func.id})" class="btn-action delete">Desativar</button>`
             : `<button onclick="ativarFuncionario(${func.id})" class="btn-action activate">Ativar</button>`

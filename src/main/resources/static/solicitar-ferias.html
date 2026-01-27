@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minhas Férias e Afastamentos - Ponto Online</title>
+    <link rel="stylesheet" href="/css/estilos.css">
+    <link rel="stylesheet" href="/css/toast.css">
+    <script src="/js/auth.js"></script>
+    <style>
+        .ferias-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .card-solicitacao, .card-historico {
+            background: var(--bg-card);
+            padding: var(--space-xl);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text-secondary);
+        }
+
+        .form-input, .form-select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            background: var(--bg-input);
+            color: var(--text-primary);
+            border-radius: var(--radius-md);
+        }
+
+        .status-badge {
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+
+        .status-solicitada { background: #fef3c7; color: #d97706; }
+        .status-aprovada { background: #d1fae5; color: #059669; }
+        .status-rejeitada { background: #fee2e2; color: #dc2626; }
+        .status-concluida { background: #e0e7ff; color: #4f46e5; }
+        .status-cancelada { background: #f3f4f6; color: #6b7280; }
+
+        .historico-lista {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .historico-item {
+            background: rgba(255, 255, 255, 0.05);
+            padding: 1rem;
+            border-radius: var(--radius-md);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-link.active {
+            color: var(--accent-primary);
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .ferias-container {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="app-header">
+        <div class="container">
+            <h1 class="logo">Ponto Online</h1>
+            <nav id="nav-menu">
+                <a href="/principal.html" class="nav-link">Início</a>
+                <a href="/historico.html" class="nav-link">Histórico</a>
+                <a href="/justificar-ausencia.html" class="nav-link">Justificar</a>
+                <a href="/solicitar-ferias.html" class="nav-link active">Férias</a>
+                <a href="#" onclick="logout(); return false;" class="nav-link">Sair</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="painel-boas-vindas">
+            <h2>🏖️ Férias e Afastamentos</h2>
+            <p>Solicite suas férias ou informe licenças médicas.</p>
+        </section>
+
+        <div class="ferias-container">
+            <!-- Formulário de Solicitação -->
+            <div class="card-solicitacao">
+                <h3>Nova Solicitação</h3>
+                <form id="formFerias">
+                    <div class="form-group">
+                        <label for="tipo">Tipo de Afastamento</label>
+                        <select id="tipo" class="form-select" required>
+                            <option value="FERIAS">Férias</option>
+                            <option value="LICENCA_MEDICA">Licença Médica</option>
+                            <option value="LICENCA_MATERNIDADE">Licença Maternidade</option>
+                            <option value="LICENCA_PATERNIDADE">Licença Paternidade</option>
+                            <option value="FOLGA_COMPENSATORIA">Folga Compensatória</option>
+                            <option value="CASAMENTO">Casamento (Gala)</option>
+                            <option value="LUTO">Luto (Nojo)</option>
+                            <option value="OUTROS">Outros</option>
+                        </select>
+                    </div>
+
+                    <div style="display: flex; gap: 1rem;">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="dataInicio">Início</label>
+                            <input type="date" id="dataInicio" class="form-input" required>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="dataFim">Fim</label>
+                            <input type="date" id="dataFim" class="form-input" required>
+                        </div>
+                    </div>
+                    
+                    <div id="resumoDias" style="margin-bottom: 1rem; font-weight: bold; color: var(--accent-primary);"></div>
+
+                    <div class="form-group">
+                        <label for="observacao">Observação (Opcional)</label>
+                        <textarea id="observacao" class="form-input" rows="3" placeholder="Detalhes adicionais..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-ponto" style="width: 100%;">Enviar Solicitação</button>
+                </form>
+            </div>
+
+            <!-- Histórico -->
+            <div class="card-historico">
+                <h3>Minhas Solicitações</h3>
+                <div id="listaHistorico" class="historico-lista">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <div id="toast-container"></div>
+    <script src="/js/toast.js"></script>
+    <script src="/js/ferias-funcionario.js"></script>
+</body>
+</html>

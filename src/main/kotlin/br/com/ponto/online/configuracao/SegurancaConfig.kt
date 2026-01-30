@@ -36,6 +36,9 @@ class SegurancaConfig(
                 authorize("/", permitAll)
                 authorize("/index.html", permitAll)
 
+                // Refresh token endpoint (público - usa refresh token para autenticação)
+                authorize("/api/auth/refresh", permitAll)
+
                 // Recursos estáticos (CSS, JS)
                 authorize("/css/**", permitAll)
                 authorize("/js/**", permitAll)

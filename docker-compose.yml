@@ -1,0 +1,45 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ponto-online-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/ponto_online_db
+      - SPRING_DATASOURCE_USERNAME=admin
+      - SPRING_DATASOURCE_PASSWORD=admin
+    networks:
+      - ponto-network
+
+  db:
+    image: postgres:15-alpine
+    container_name: ponto-online-db
+    environment:
+      - POSTGRES_DB=ponto_online_db
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=admin
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U admin -d ponto_online_db"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - ponto-network
+
+networks:
+  ponto-network:
+    driver: bridge
+
+volumes:
+  pgdata:
